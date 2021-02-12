@@ -23,8 +23,9 @@ abstract class Vehicle implements Runnable {
     public void run() {
         while (true) {
             try {
-                Thread.sleep(250);
-                draw();
+                Thread.sleep(100);
+                posXY[0]++;
+                posXY[1]++;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
