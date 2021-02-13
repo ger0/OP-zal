@@ -1,5 +1,6 @@
 package Vehicles;
-import Utils.MapSystem;
+
+import Core.MapSystem;
 
 public class CruiseShip extends Ship {
     private int     capacity;

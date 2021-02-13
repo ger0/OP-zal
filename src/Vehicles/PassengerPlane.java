@@ -1,5 +1,6 @@
 package Vehicles;
-import Utils.MapSystem;
+
+import Core.MapSystem;
 
 public class PassengerPlane extends Airplane {
     private int capacity;

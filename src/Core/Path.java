@@ -1,4 +1,4 @@
-package Utils;
+package Core;
 
 public class Path {
     private int[] gridIndices;

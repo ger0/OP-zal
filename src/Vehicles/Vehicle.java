@@ -1,7 +1,8 @@
 package Vehicles;
-import Utils.MapSystem;
 
-abstract class Vehicle implements Runnable {
+import Core.MapSystem;
+
+public abstract class Vehicle implements Runnable {
     private final int id;
     private Thread t;
     private int[] posXY;
@@ -23,16 +24,17 @@ abstract class Vehicle implements Runnable {
     public void run() {
         while (true) {
             try {
+                // nothing
                 Thread.sleep(100);
-                posXY[0]++;
-                posXY[1]++;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
     public abstract void draw();
-    public int   getId()    { return this.id; }
-    public int[] getPos()   { return this.posXY; }
-    // path setting tbd
+    public void del() {
+        map.deleteVehicle(this.id);
+    }
+    public int getId()      { return this.id;       }
+    public int[] getPos()   { return this.posXY;    }
 }

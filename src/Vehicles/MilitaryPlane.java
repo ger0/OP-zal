@@ -1,10 +1,11 @@
 package Vehicles;
-import Utils.MapSystem;
+
+import Core.MapSystem;
 
 public class MilitaryPlane extends Airplane {
     private String type;
 
-    MilitaryPlane(String type, int workers, int id, int[] posXY, MapSystem map) {
+    public MilitaryPlane(String type, int workers, int id, int[] posXY, MapSystem map) {
         super(workers, id, posXY, map);
         this.type = type;
     }

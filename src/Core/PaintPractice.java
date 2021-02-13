@@ -1,11 +1,11 @@
-package Utils;
+package Core;
 
+import Core.Shapes.Circle;
+import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.JPanel;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JPanel;
-import Utils.Shapes.Circle;
-import java.awt.Color;
 
 public class PaintPractice extends JPanel {
     private List<Circle> points = new ArrayList<Circle>();

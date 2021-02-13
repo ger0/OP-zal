@@ -1,5 +1,6 @@
 package Vehicles;
-import Utils.MapSystem;
+
+import Core.MapSystem;
 
 public abstract class Ship extends Vehicle {
     private int maxSpeed;

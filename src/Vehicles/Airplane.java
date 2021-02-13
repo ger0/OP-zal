@@ -1,5 +1,5 @@
 package Vehicles;
-import Utils.MapSystem;
+import Core.MapSystem;
 
 public abstract class Airplane extends Vehicle {
     private int fuel;
@@ -11,24 +11,24 @@ public abstract class Airplane extends Vehicle {
         this.workers = workers;
         this.fuel    = 100;
     }
-    // emergency landing
-    public void emergency() {
-        // ...
-    }
-
     @Override
     public void draw() {
         super.map.pushPlane(super.getId(), super.getPos());
     }
 
-    public int      getFuel()       { return this.fuel; }
-    public int      getWorkers()    { return this.workers; }
-    public String   getNextStop()   { return this.nextStop; }
+    // emergency landing
+    public void emergency() {
+        // ...
+    }
 
-    public void setFuel(int fuel) {
+    public synchronized int      getFuel()       { return this.fuel;        }
+    public synchronized int      getWorkers()    { return this.workers;     }
+    public synchronized String   getNextStop()   { return this.nextStop;    }
+
+    public synchronized void setFuel(int fuel) {
         this.fuel = fuel;
     }
-    public void setWorkers(int workers) {
+    public synchronized void setWorkers(int workers) {
         this.workers = workers;
     }
 }
