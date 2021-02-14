@@ -1,7 +1,9 @@
 package Places;
 
+import Core.MapSystem;
+
 public class Harbour extends Place {
-    Harbour(int capacity, int[] posXY) {
-        super(capacity, posXY);
+    public Harbour(int id, int capacity, int[] posXY, MapSystem map) {
+        super(id, capacity, posXY, map);
     }
 }

@@ -1,7 +1,9 @@
 package Places;
 
+import Core.MapSystem;
+
 public class CivilAirport extends Airport {
-    CivilAirport(int capacity, int[] posXY) {
-        super(capacity, posXY);
+    public CivilAirport(int id, int capacity, int[] posXY, MapSystem map) {
+        super(id, capacity, posXY, map);
     }
 }

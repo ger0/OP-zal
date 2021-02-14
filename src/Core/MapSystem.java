@@ -1,24 +1,30 @@
 package Core;
 
+import Places.Place;
+
 import javax.swing.*;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Vector;
 
 public class MapSystem extends JFrame {
     private final int SIZE;
     private final int gridSize;
     private final int gridDensity;
 
+    // gui object reference
     private Options gui;
-    //contains coordinates for different types of entities
-    private final PaintPractice panel = new PaintPractice();
-    private Map<Integer, int[]> planeCoords;
-    private Map<Integer, int[]> shipCoords;
 
-    // stores vehicle ids
+    // contains coordinates for different types of entities drawn on map
+    private final PaintPractice panel = new PaintPractice();
+    private Map<Integer, int[]> planeCoords = new HashMap<Integer, int[]>();
+    private Map<Integer, int[]> shipCoords  = new HashMap<Integer, int[]>();
+    private Map<Integer, int[]> statCoords  = new HashMap<Integer, int[]>();
+
+    // stores object ids on map's grid
     private int gridIndices[];
 
     public MapSystem(int size, int density, Options gui) {
@@ -41,30 +47,32 @@ public class MapSystem extends JFrame {
             this.add(panel);
             setVisible(true);
             initMouseListener();
-
-            planeCoords     = new HashMap<Integer, int[]>();
-            shipCoords      = new HashMap<Integer, int[]>();
         }
     }
     // key = id
-    private synchronized void pushIndice(int key, int[] posXY) {
+    private void pushIndice(int key, int[] posXY) {
         gridIndices[posXY[0] / gridSize + (posXY[1] / gridSize) * gridDensity] = key;
     }
-    public synchronized void pushPlane(int key, int[] posXY) {
+    public void pushPlane(int key, int[] posXY) {
         pushIndice(key, posXY);
         planeCoords.put(key, posXY);
     }
-    public synchronized void pushShip(int key, int[] posXY) {
+    public void pushShip(int key, int[] posXY) {
         pushIndice(key, posXY);
         shipCoords.put(key, posXY);
     }
-    public synchronized void deleteVehicle(int key) {
+    public void deleteVehicle(int key) {
         shipCoords.remove(key);
         planeCoords.remove(key);
+    }
+    public void pushStation(int key, int[] posXY) {
+        pushIndice(key, posXY);
+        statCoords.put(key, posXY);
     }
     public void repaint() {
         planeCoords.forEach((k, pos) -> panel.push(pos[0], pos[1], Color.RED));
         shipCoords.forEach((k, pos) -> panel.push(pos[0], pos[1], Color.BLUE));
+        statCoords.forEach((k, pos) -> panel.push(pos[0], pos[1], Color.BLACK));
         super.repaint();
     }
     private void initMouseListener() {
@@ -74,7 +82,7 @@ public class MapSystem extends JFrame {
                 id = gridIndices[
                         e.getPoint().x / gridSize
                         + (e.getPoint().y / gridSize) * gridDensity];
-                gui.select(id);
+                gui.select(id, new int[]{e.getPoint().x, e.getPoint().y});
             }
             public void mousePressed(MouseEvent mouseEvent) {}
             public void mouseReleased(MouseEvent mouseEvent) {}

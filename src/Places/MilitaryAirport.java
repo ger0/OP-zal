@@ -1,10 +1,12 @@
 package Places;
 
+import Core.MapSystem;
+
 public class MilitaryAirport extends Airport {
     private String type;
 
-    MilitaryAirport(String type, int capacity, int[] posXY) {
-            super(capacity, posXY);
+    public MilitaryAirport(int id, String type, int capacity, int[] posXY, MapSystem map) {
+            super(id, capacity, posXY, map);
             this.type = type;
     }
     // public boolean spawnPlane();

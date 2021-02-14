@@ -1,6 +1,7 @@
 import Core.EntityContainer;
 import Core.MapSystem;
 import Core.Options;
+import Places.*;
 import Vehicles.*;
 
 public class Application {
@@ -12,23 +13,18 @@ public class Application {
         try {
             Options gui = new Options();
             gui.start();
-
             MapSystem map = new MapSystem(SIZE, DENSITY, gui);
-
             EntityContainer container = new EntityContainer();
+            gui.attach(container, map);
 
-            PassengerPlane test = new PassengerPlane(100, 10, 1, new int[]{10, 10}, map);
-            test.start();
-            container.add((Airplane)test, 1);
-            MilitaryPlane test1 = new MilitaryPlane("BONG", 100, 2, new int[]{100, 100}, map);
-            test1.start();
-            container.add((Airplane)test1, 2);
+            container.add(new CivilAirport(1, 100, new int[]{300, 10}, map), 1);
+            container.add(new CivilAirport(2, 100, new int[]{170, 490}, map), 2);
+            container.add(new CivilAirport(3, 100, new int[]{430, 490}, map), 3);
 
-            CarrierShip test2 = new CarrierShip("mover", 10, 3, new int[]{500, 300}, map);
-            test2.start();
-            container.add((Ship)test2, 3);
+            container.add(new MilitaryAirport(4, "THONG", 100, new int[]{30, 240}, map), 4);
+            container.add(new MilitaryAirport(5, "THONG", 100, new int[]{570, 240}, map), 5);
+            container.drawStations();
 
-            gui.attach(container);
             while (true) {
                 container.drawVehicles();
                 map.repaint();
