@@ -1,10 +1,11 @@
 package Core;
 
-import javax.swing.*;
-
 import Places.*;
 import Vehicles.*;
 
+import javax.swing.*;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,41 +13,43 @@ public class Options implements Runnable {
     private EntityContainer container;
     private MapSystem map;
     private Thread t;
+
+    // current selection on the map
     private int selectedId = 0;
     private int currentXY[] = new int[]{0, 0};
 
     private JPanel panel;
-    private JLabel selected;
-    private JButton vehRemove;
-    private JTextArea capacity;
-    private JTextArea weaponName;
-    private JTextArea load;
-    private JTextArea company;
-    private JPanel passengerPanel;
-    private JPanel militaryPanel;
-    private JButton plnAdd;
-    private JTextArea textArea1;
-    private JTextArea textArea2;
-    private JTextArea coordinates;
-    private JPanel ship;
-    private JPanel Plane;
-    private JButton shpAdd;
-    private JLabel output;
+    private JLabel selectLabel;
+
+    // info text
+    private JTextArea infoFuel, infoWork, infoCompany, infoSpeed,
+                        infoCap, infoLoad, infoWeapon;
+    private JTextArea infoX, infoY;
+    private JButton vehRemove, passengerAdd, cruiseAdd,
+                    carrierAdd, militaryAdd;
 
     public Options() {
         vehRemove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 container.remove(selectedId);
+                clearInfo();
             }
         });
-        plnAdd.addActionListener(new ActionListener() {
+        passengerAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 container.add(new PassengerPlane(100, 10, 6, currentXY, map), 6);
             }
         });
+        cruiseAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                container.add(new CruiseShip("Company", 200, 10, 7, currentXY, map), 7);
+            }
+        });
     }
+    // thread ----------------------------------------------------
     public void start() {
         System.out.println("Starting thread: Options");
         if (t == null) {
@@ -61,43 +64,86 @@ public class Options implements Runnable {
         frame.pack();
         frame.setVisible(true);
     }
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
+    // entity selection ------------------------------
     public void select(int id, int[] xy) {
+        clearInfo();
         this.selectedId = id;
         this.currentXY = xy;
         Object select = container.get(id);
-
+        displaySelect(select);
+    }
+    void displaySelect(Object select) {
         if (select == null) {
-            selected.setText("None");
+            selectLabel.setText("None");
         } else {
-            if (select.getClass() == PassengerPlane.class) {
-                selected.setText("Passenger Plane");
-            } else if (select.getClass() == MilitaryPlane.class) {
-                selected.setText("Military Plane");
-            } else if (select.getClass() == CarrierShip.class) {
-                selected.setText("Carrier Ship");
-            } else if (select.getClass() == CruiseShip.class) {
-                selected.setText("Cruise Ship");
-            } else if (select.getClass() == Harbour.class) {
-                selected.setText("Harbour");
-            } else if (select.getClass() == CivilAirport.class) {
-                selected.setText("Civil Airport");
-            } else if (select.getClass() == MilitaryAirport.class) {
-                selected.setText("Military Airport");
-            }
+// Places - Stations
             if (Place.class.isAssignableFrom(select.getClass())) {
-                coordinates.setText("x: " + Integer.toString(((Place)select).getPos()[0])
-                                 + " y: " + Integer.toString(((Place)select).getPos()[1]));
-            } else {
-                coordinates.setText("x: " + Integer.toString(((Vehicle)select).getPos()[0])
-                        + " y: " + Integer.toString(((Vehicle)select).getPos()[1]));
+                setInfo(((Place)select).getPos()[0], infoX);
+                setInfo(((Place)select).getPos()[1], infoY);
+
+                if (select.getClass() == Harbour.class) {
+                    selectLabel.setText("Harbour");
+                } else if (select.getClass() == CivilAirport.class) {
+                    selectLabel.setText("Civil Airport");
+                } else if (select.getClass() == MilitaryAirport.class) {
+                    selectLabel.setText("Military Airport");
+                }
+            }
+// Vehicles
+            else if (Vehicle.class.isAssignableFrom(select.getClass())) {
+                setInfo(((Vehicle)select).getPos()[0], infoX);
+                setInfo(((Vehicle)select).getPos()[1], infoY);
+    // Airplane
+                if (Airplane.class.isAssignableFrom(select.getClass())) {
+                    setInfo(((Airplane)select).getFuel(),       infoFuel);
+                    setInfo(((Airplane)select).getWorkers(),    infoWork);
+        // Passenger Plane
+                    if (select.getClass() == PassengerPlane.class) {
+                        selectLabel.setText("Passenger Plane");
+                        setInfo(((PassengerPlane)select).getCapacity(), infoCap);
+                        setInfo(((PassengerPlane)select).getLoad(),     infoLoad);
+        // Military Plane
+                    } else if (select.getClass() == MilitaryPlane.class) {
+                        selectLabel.setText("Military Plane");
+                        setInfo(((MilitaryPlane)select).getType(), infoWeapon);
+                    }
+                }
+    // Ship
+                else if (Ship.class.isAssignableFrom(select.getClass())) {
+                    setInfo(((Ship)select).getMaxSpeed(), infoSpeed);
+        // Carrier Ship
+                    if (select.getClass() == CarrierShip.class) {
+                        selectLabel.setText("Carrier Ship");
+                        setInfo(((CarrierShip)select).getWeapon(), infoWeapon);
+        // Cruise Ship
+                    } else if (select.getClass() == CruiseShip.class) {
+                        selectLabel.setText("Cruise Ship");
+                        setInfo(((CruiseShip)select).getCapacity(), infoCap);
+                        setInfo(((CruiseShip)select).getLoad(),     infoLoad);
+                        setInfo(((CruiseShip)select).getCompany(),  infoCompany);
+                    }
+                }
             }
         }
     }
-        public void attach(EntityContainer container, MapSystem map) {
+    // clear all TextAreas on the main panel
+    void clearInfo() {
+        for(Component c:panel.getComponents()) {
+            if (c instanceof JTextArea) {
+                ((JTextArea)c).setText("");
+            }
+        }
+    }
+    // display information about currently selected object
+    void setInfo(int val, JTextArea handle) {
+        handle.setText(Integer.toString(val));
+    }
+    void setInfo(String val, JTextArea handle) {
+        handle.setText(val);
+    }
+    // TBD this should be removed -- attaches container and map
+    public void attach(EntityContainer container, MapSystem map) {
             this.container  = container;
             this.map        = map;
-        }
     }
+}

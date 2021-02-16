@@ -2,7 +2,6 @@ import Core.EntityContainer;
 import Core.MapSystem;
 import Core.Options;
 import Places.*;
-import Vehicles.*;
 
 public class Application {
     public static void main(String[] args) {
@@ -15,18 +14,24 @@ public class Application {
             gui.start();
             MapSystem map = new MapSystem(SIZE, DENSITY, gui);
             EntityContainer container = new EntityContainer();
-            gui.attach(container, map);
 
-            container.add(new CivilAirport(1, 100, new int[]{300, 10}, map), 1);
-            container.add(new CivilAirport(2, 100, new int[]{170, 490}, map), 2);
-            container.add(new CivilAirport(3, 100, new int[]{430, 490}, map), 3);
-
-            container.add(new MilitaryAirport(4, "THONG", 100, new int[]{30, 240}, map), 4);
-            container.add(new MilitaryAirport(5, "THONG", 100, new int[]{570, 240}, map), 5);
+            int amnt = 8;
+            int drawSize = SIZE / 3;
+            for (int i = 1; i <= amnt; ++i) {
+                int[] xy = {(int)(Math.cos((double)i * 3.14 * 2 / amnt) * drawSize + SIZE / 2),
+                            (int)(Math.sin((double)i * 3.14 * 2 / amnt) * drawSize + SIZE / 2)};
+                if (i % 3 == 0) {
+                    container.add(new MilitaryAirport(i, "Bob", 20, xy, map), i);
+                } else {
+                    container.add(new CivilAirport(i, 5, xy, map), i);
+                }
+            }
             container.drawStations();
+            gui.attach(container, map);
 
             while (true) {
                 container.drawVehicles();
+                container.drawStations();
                 map.repaint();
                 Thread.sleep(32);
             }

@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class EntityContainer {
-    private Map<Integer, Airplane>  planes = new HashMap<Integer, Airplane>();
-    private Map<Integer, Ship>      ships = new HashMap<Integer, Ship>();
-    private Map<Integer, Place>     stations = new HashMap<Integer, Place>();
+    private Map<Integer, Airplane>  planes      = new HashMap<Integer, Airplane>();
+    private Map<Integer, Ship>      ships       = new HashMap<Integer, Ship>();
+    private Map<Integer, Place>     stations    = new HashMap<Integer, Place>();
 
-    public void add(Airplane plane, int key)    { planes.put(key, plane); plane.draw();  }
-    public void add(Ship ship, int key)         { ships.put(key, ship);     }
+    public void add(Airplane plane, int key)    { planes.put(key, plane);   plane.start(); plane.draw();  }
+    public void add(Ship ship, int key)         { ships.put(key, ship);     ship.start();  ship.draw();   }
     public void add(Place place, int key)       { stations.put(key, place); }
 
     public void drawVehicles() {

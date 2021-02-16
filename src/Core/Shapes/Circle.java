@@ -15,7 +15,7 @@ public class Circle {
     }
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        Ellipse2D.Double circle = new Ellipse2D.Double(x - 5, y - 5, 20, 20);
+        Ellipse2D.Double circle = new Ellipse2D.Double(x, y - 15, 20, 20);
         g2d.setColor(color);
         g2d.fill(circle);
     }

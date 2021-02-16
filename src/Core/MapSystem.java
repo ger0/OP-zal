@@ -1,14 +1,11 @@
 package Core;
 
-import Places.Place;
-
 import javax.swing.*;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Vector;
 
 public class MapSystem extends JFrame {
     private final int SIZE;
@@ -39,11 +36,14 @@ public class MapSystem extends JFrame {
             SIZE = size;
             gridDensity = density;
             gridSize    = size / density;
-            gridIndices = new int[gridDensity * gridDensity];
+            gridIndices = new int[(gridDensity + 1) * (gridDensity + 1)];
             this.gui = gui;
+            this.setSize(SIZE, SIZE);
+            this.setResizable(false);
 
             // JFrame settings
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            panel.setSize(SIZE, SIZE);
             this.add(panel);
             setVisible(true);
             initMouseListener();
@@ -71,17 +71,21 @@ public class MapSystem extends JFrame {
     }
     public void repaint() {
         planeCoords.forEach((k, pos) -> panel.push(pos[0], pos[1], Color.RED));
-        shipCoords.forEach((k, pos) -> panel.push(pos[0], pos[1], Color.BLUE));
-        statCoords.forEach((k, pos) -> panel.push(pos[0], pos[1], Color.BLACK));
+        shipCoords.forEach((k, pos) ->  panel.push(pos[0], pos[1], Color.BLUE));
+        statCoords.forEach((k, pos) ->  panel.push(cutTrail(pos[0]), cutTrail(pos[1]), Color.BLACK));
         super.repaint();
     }
     private void initMouseListener() {
-        this.addMouseListener(new MouseListener() {
+        panel.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
                 int id = 0;
                 id = gridIndices[
                         e.getPoint().x / gridSize
-                        + (e.getPoint().y / gridSize) * gridDensity];
+                        + e.getPoint().y / gridSize * gridDensity];
+                System.out.println(e.getPoint());
+
+                System.out.println(e.getPoint().x / gridSize
+                        + e.getPoint().y / gridSize * gridDensity);
                 gui.select(id, new int[]{e.getPoint().x, e.getPoint().y});
             }
             public void mousePressed(MouseEvent mouseEvent) {}
@@ -89,5 +93,8 @@ public class MapSystem extends JFrame {
             public void mouseEntered(MouseEvent mouseEvent) {}
             public void mouseExited(MouseEvent mouseEvent) {}
         });
+    }
+    int cutTrail(int p) {
+        return p - p % gridSize;
     }
 }
