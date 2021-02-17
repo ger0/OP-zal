@@ -1,6 +1,7 @@
 package Places;
 
 import Core.MapSystem;
+import Core.Shapes.Square;
 
 public abstract class Place {
     private int id;
@@ -8,17 +9,13 @@ public abstract class Place {
     private int[] posXY;
     private MapSystem map;
 
-    // public void draw();
-
     Place(int id, int capacity, int[] posXY, MapSystem map) {
         this.id         = id;
         this.capacity   = capacity;
         this.posXY      = posXY;
         this.map        = map;
     }
-    public void draw() {
-        map.pushStation(id, posXY);
-    }
+    public abstract Square render(int size);
     public int[] getPos() {
         return posXY;
     }

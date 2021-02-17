@@ -1,7 +1,5 @@
 package Vehicles;
 
-import Core.MapSystem;
-
 public class CruiseShip extends Ship {
     private int     capacity;
     private int     load;
@@ -20,10 +18,8 @@ public class CruiseShip extends Ship {
     public void setCapacity(int cap) {
         if (cap > 10000) {
             this.capacity = 10000;
-        } else if (cap < 1) {
-            this.capacity = 1;
         } else {
-            this.capacity = cap;
+            this.capacity = Math.max(cap, 1);
         }
     }
     // make setting adjustments later

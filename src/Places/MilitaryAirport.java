@@ -1,6 +1,9 @@
 package Places;
 
 import Core.MapSystem;
+import Core.Shapes.Square;
+
+import java.awt.*;
 
 public class MilitaryAirport extends Airport {
     private String type;
@@ -12,5 +15,8 @@ public class MilitaryAirport extends Airport {
     // public boolean spawnPlane();
     public void changeType(String type) {
         this.type = type;
+    }
+    public Square render(int size) {
+        return new Square(super.getPos(), Color.DARK_GRAY, size + 10);
     }
 }

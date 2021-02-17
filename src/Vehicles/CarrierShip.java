@@ -1,7 +1,5 @@
 package Vehicles;
 
-import Core.MapSystem;
-
 public class CarrierShip extends Ship {
     private String weaponName;
 

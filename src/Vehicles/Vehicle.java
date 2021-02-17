@@ -1,12 +1,13 @@
 package Vehicles;
 
 import Core.MapSystem;
+import Core.Shapes.Circle;
 
 public abstract class Vehicle implements Runnable {
     private final int id;
     private int velocity = 2;
     private Thread t;
-    private int[] posXY;
+    private final int[] posXY;
     private int[] targetXY = new int[] {300, 300};
 
     MapSystem map;
@@ -26,21 +27,17 @@ public abstract class Vehicle implements Runnable {
         while (true) {
             try {
                 update();
-                draw();
                 Thread.sleep(150);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
-    public abstract void draw();
+    public abstract Circle render(int size);
     void changeVelocity(int vel) {
         if (velocity > 1) {
             this.velocity = vel;
         }
-    }
-    public void del() {
-        map.deleteVehicle(this.id);
     }
     void update() {
         if (targetXY != null) {

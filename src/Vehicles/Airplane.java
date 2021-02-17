@@ -1,18 +1,18 @@
 package Vehicles;
-import Core.MapSystem;
+import Core.Shapes.Circle;
+
+import java.awt.*;
 
 public abstract class Airplane extends Vehicle {
     private int fuel;
     private int workers;
-    private String nextStop;
 
     Airplane(int id, int[] posXY) {
         super(id, posXY);
-        this.fuel    = 100;
+        this.fuel    = 10000;
     }
-    @Override
-    public synchronized void draw() {
-        super.map.pushPlane(super.getId(), super.getPos());
+    public synchronized Circle render(int size) {
+        return new Circle(super.getPos(), Color.RED, size);
     }
     // emergency landing
     public void emergency() {
@@ -26,7 +26,6 @@ public abstract class Airplane extends Vehicle {
 
     public synchronized int      getFuel()       { return this.fuel;        }
     public synchronized int      getWorkers()    { return this.workers;     }
-    public synchronized String   getNextStop()   { return this.nextStop;    }
 
     public synchronized void setFuel(int fuel) {
         this.fuel = fuel;

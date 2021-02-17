@@ -17,7 +17,7 @@ public class Application {
             EntityContainer container = new EntityContainer();
 
             int amnt = 8;
-            int drawSize = SIZE / 3;
+            int drawSize = (int)((float)SIZE / 2.5);
             while (id <= amnt) {
                 int[] xy = {(int)(Math.cos((double)id * 3.14 * 2 / amnt) * drawSize + SIZE / 2),
                             (int)(Math.sin((double)id * 3.14 * 2 / amnt) * drawSize + SIZE / 2)};
@@ -28,13 +28,10 @@ public class Application {
                 }
                 id++;
             }
-            container.drawStations();
             gui.attach(container, map, id);
 
             while (true) {
-                container.drawVehicles();
-                container.drawStations();
-                map.repaint();
+                map.repaint(container);
                 Thread.sleep(32);
             }
         } catch (Exception e) {

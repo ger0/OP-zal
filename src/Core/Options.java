@@ -16,7 +16,7 @@ public class Options implements Runnable {
 
     // current selection on the map
     private int selectedId = 0;
-    private int currentXY[] = new int[]{0, 0};
+    private int[] currentXY = new int[]{0, 0};
 
     // the most recent entity id
     private int recId;
@@ -30,14 +30,12 @@ public class Options implements Runnable {
     private JTextArea infoX, infoY;
     private JButton vehRemove, passengerAdd, cruiseAdd,
                     carrierAdd, militaryAdd;
+    private JComboBox comboBox1;
 
     public Options() {
-        vehRemove.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                container.remove(selectedId);
-                clearInfo();
-            }
+        vehRemove.addActionListener(actionEvent -> {
+            container.remove(selectedId);
+            clearInfo();
         });
         passengerAdd.addActionListener(new ActionListener() {
             @Override
