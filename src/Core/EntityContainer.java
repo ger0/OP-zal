@@ -15,7 +15,6 @@ public class EntityContainer {
     public void add(Ship ship, int key)         { ships.put(key, ship);     ship.start();}
     public void add(Place place, int key)       { stations.put(key, place); }
 
-
     public void remove(int key) {
         ships.remove(key);
         planes.remove(key);
@@ -23,10 +22,10 @@ public class EntityContainer {
     public Object get(int key) {
         Object ret;
         ret = ships.getOrDefault(key, null);
-        if (ret != null) {  return ret; }
+        if (ret != null) return ret;
 
         ret = planes.getOrDefault(key, null);
-        if (ret != null) {  return ret; }
+        if (ret != null) return ret;
 
         return stations.getOrDefault(key, null);
     }
@@ -39,6 +38,7 @@ public class EntityContainer {
     public Map<Integer, Place> getPlaces() {
         return this.stations;
     }
+
     // find an entity colliding with xy coordinates
     public Object findByPos(int[] xy, int size) {
         if (size >= 1) {
