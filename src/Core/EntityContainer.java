@@ -42,4 +42,38 @@ public class EntityContainer {
             return null;
         }
     }
+
+    // find an entity colliding with xy coordinates
+    public Object findByPos(int[] xy, int size) {
+        if (size >= 1) {
+            // oh no
+            for (Integer key: planes.keySet()) {
+                int[] refXY = (planes.get(key)).getPos();
+                if (isColliding(xy, size, refXY)) {
+                    return planes.get(key);
+                }
+            }
+            for (Integer key: ships.keySet()) {
+                int[] refXY = (ships.get(key)).getPos();
+                if (isColliding(xy, size, refXY)) {
+                    return ships.get(key);
+                }
+            }
+            for (Integer key: stations.keySet()) {
+                int[] refXY = (stations.get(key)).getPos();
+                if (isColliding(xy, size, refXY)) {
+                    return stations.get(key);
+                }
+            }
+        }
+        return null;
+    }
+    boolean isColliding(int[] xy, int size, int[] refXY) {
+        if (Math.abs(refXY[0] - xy[0]) < size &&
+            Math.abs(refXY[1] - xy[1]) < size) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

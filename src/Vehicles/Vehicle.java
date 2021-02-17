@@ -4,15 +4,16 @@ import Core.MapSystem;
 
 public abstract class Vehicle implements Runnable {
     private final int id;
+    private int velocity = 2;
     private Thread t;
     private int[] posXY;
+    private int[] targetXY = new int[] {300, 300};
 
     MapSystem map;
 
-    Vehicle(int id, int[] posXY, MapSystem map) {
+    Vehicle(int id, int[] posXY) {
         this.id = id;
         this.posXY = posXY;
-        this.map = map;
     }
     public void start() {
         System.out.println("Starting thread: VEHICLE");
@@ -24,17 +25,47 @@ public abstract class Vehicle implements Runnable {
     public void run() {
         while (true) {
             try {
-                // nothing
-                Thread.sleep(100);
+                update();
+                draw();
+                Thread.sleep(150);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
     public abstract void draw();
+    void changeVelocity(int vel) {
+        if (velocity > 1) {
+            this.velocity = vel;
+        }
+    }
     public void del() {
         map.deleteVehicle(this.id);
     }
-    public int getId()      { return this.id;       }
+    void update() {
+        if (targetXY != null) {
+            int dirX = targetXY[0] - posXY[0];
+            int dirY = targetXY[1] - posXY[1];
+            double factor = velocity / Math.sqrt(Math.pow(dirX, 2) + Math.pow(dirY, 2));
+            this.posXY[0] += (int)(dirX * factor);
+            this.posXY[1] += (int)(dirY * factor);
+        }
+    }
+    public int getId()     { return this.id;       }
     public int[] getPos()   { return this.posXY;    }
+
+    public void setMap(MapSystem map) {
+        this.map = map;
+    }
+    public boolean setTarget(int[] tar) {
+        if (tar.length == 2) {
+            if (tar[0] < map.getMapSize() &&
+                    tar[0] > 0 && tar[1] > 0 &&
+                    tar[1] < map.getMapSize()) {
+                this.targetXY = tar;
+                return true;
+            }
+        }
+        return false;
+    }
 }

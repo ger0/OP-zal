@@ -5,9 +5,11 @@ import Core.MapSystem;
 public class CarrierShip extends Ship {
     private String weaponName;
 
-    public CarrierShip(String name, int maxSpeed, int id, int[] posXY, MapSystem map) {
-        super(maxSpeed, id, posXY, map);
-        this.weaponName = name;
+    public CarrierShip(int id, int[] posXY) {
+        super(id, posXY);
     }
     public String getWeapon()   { return this.weaponName; }
+    public void setWeapon(String name) {
+        weaponName = name;
+    }
 }

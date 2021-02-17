@@ -7,7 +7,8 @@ public class Application {
     public static void main(String[] args) {
         // rozmiar kwadratu mapy wraz z iloscia pkt. na mapie
         final int SIZE      = 600;
-        final int DENSITY   = 10;
+        final int DENSITY   = 20;
+        int id = 1;
 
         try {
             Options gui = new Options();
@@ -17,17 +18,18 @@ public class Application {
 
             int amnt = 8;
             int drawSize = SIZE / 3;
-            for (int i = 1; i <= amnt; ++i) {
-                int[] xy = {(int)(Math.cos((double)i * 3.14 * 2 / amnt) * drawSize + SIZE / 2),
-                            (int)(Math.sin((double)i * 3.14 * 2 / amnt) * drawSize + SIZE / 2)};
-                if (i % 3 == 0) {
-                    container.add(new MilitaryAirport(i, "Bob", 20, xy, map), i);
+            while (id <= amnt) {
+                int[] xy = {(int)(Math.cos((double)id * 3.14 * 2 / amnt) * drawSize + SIZE / 2),
+                            (int)(Math.sin((double)id * 3.14 * 2 / amnt) * drawSize + SIZE / 2)};
+                if (id % 3 == 0) {
+                    container.add(new MilitaryAirport(id, "Bob", 20, xy, map), id);
                 } else {
-                    container.add(new CivilAirport(i, 5, xy, map), i);
+                    container.add(new CivilAirport(id, 5, xy, map), id);
                 }
+                id++;
             }
             container.drawStations();
-            gui.attach(container, map);
+            gui.attach(container, map, id);
 
             while (true) {
                 container.drawVehicles();

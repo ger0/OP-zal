@@ -1,14 +1,15 @@
 package Vehicles;
 
-import Core.MapSystem;
-
 public class MilitaryPlane extends Airplane {
     private String type;
 
-    public MilitaryPlane(String type, int workers, int id, int[] posXY, MapSystem map) {
-        super(workers, id, posXY, map);
-        this.type = type;
+    public MilitaryPlane(int id, int[] posXY) {
+        super(id, posXY);
     }
 
     public String getType() { return this.type; }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

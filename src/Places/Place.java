@@ -22,4 +22,7 @@ public abstract class Place {
     public int[] getPos() {
         return posXY;
     }
+    public int getId() {
+        return id;
+    }
 }

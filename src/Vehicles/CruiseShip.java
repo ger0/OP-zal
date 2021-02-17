@@ -7,9 +7,17 @@ public class CruiseShip extends Ship {
     private int     load;
     private String  company;
 
-    public CruiseShip(String company, int cap, int maxSpd, int id, int[] posXY, MapSystem map) {
-        super(maxSpd, id, posXY, map);
+    public CruiseShip(int id, int[] posXY) {
+        super(id, posXY);
+    }
+    public int      getCapacity()   { return this.capacity; }
+    public int      getLoad()       { return this.load; }
+    public String   getCompany()    { return this.company; }
+
+    public void setCompany(String company) {
         this.company = company;
+    }
+    public void setCapacity(int cap) {
         if (cap > 10000) {
             this.capacity = 10000;
         } else if (cap < 1) {
@@ -18,10 +26,6 @@ public class CruiseShip extends Ship {
             this.capacity = cap;
         }
     }
-    public int      getCapacity()   { return this.capacity; }
-    public int      getLoad()       { return this.load; }
-    public String   getCompany()    { return this.company; }
-
     // make setting adjustments later
     public boolean setLoad(int val) {
         if (val > capacity && val < 0) {

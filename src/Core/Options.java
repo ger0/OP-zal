@@ -18,6 +18,9 @@ public class Options implements Runnable {
     private int selectedId = 0;
     private int currentXY[] = new int[]{0, 0};
 
+    // the most recent entity id
+    private int recId;
+
     private JPanel panel;
     private JLabel selectLabel;
 
@@ -39,17 +42,39 @@ public class Options implements Runnable {
         passengerAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                container.add(new PassengerPlane(100, 10, 6, currentXY, map), 6);
+                PassengerPlane p = new PassengerPlane(recId, currentXY);
+                p.setMap(map);
+                p.setCapacity(Integer.parseUnsignedInt(infoCap.getText()));
+                p.setWorkers(Integer.parseUnsignedInt(infoWork.getText()));
+                container.add(p, recId);
+                recId++;
             }
+        });
+        carrierAdd.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent actionEvent) {
+                 CarrierShip p = new CarrierShip(recId, currentXY);
+                 p.setMap(map);
+                 p.setWeapon(infoWeapon.getText());
+                 p.setMaxSpeed(Integer.parseUnsignedInt(infoSpeed.getText()));
+                 container.add(p, recId);
+                 recId++;
+             }
         });
         cruiseAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                container.add(new CruiseShip("Company", 200, 10, 7, currentXY, map), 7);
+                CruiseShip p = new CruiseShip(recId, currentXY);
+                p.setMap(map);
+                p.setCompany(infoCompany.getText());
+                p.setCapacity(Integer.parseUnsignedInt(infoCap.getText()));
+                p.setMaxSpeed(Integer.parseUnsignedInt(infoSpeed.getText()));
+                container.add(p, recId);
+            recId++;
             }
         });
     }
-    // thread ----------------------------------------------------
+    // thread ------------------------------------------------------
     public void start() {
         System.out.println("Starting thread: Options");
         if (t == null) {
@@ -64,15 +89,16 @@ public class Options implements Runnable {
         frame.pack();
         frame.setVisible(true);
     }
-    // entity selection ------------------------------
-    public void select(int id, int[] xy) {
+    // entity selection ---------------------------------------------
+    public void select(int[] xy) {
         clearInfo();
-        this.selectedId = id;
         this.currentXY = xy;
-        Object select = container.get(id);
-        displaySelect(select);
+        setInfo(xy[0], infoX);
+        setInfo(xy[1], infoY);
+        Object select = container.findByPos(xy, map.getGridSize());
+        setSelection(select);
     }
-    void displaySelect(Object select) {
+    void setSelection(Object select) {
         if (select == null) {
             selectLabel.setText("None");
         } else {
@@ -80,17 +106,20 @@ public class Options implements Runnable {
             if (Place.class.isAssignableFrom(select.getClass())) {
                 setInfo(((Place)select).getPos()[0], infoX);
                 setInfo(((Place)select).getPos()[1], infoY);
+                selectedId = ((Place)select).getId();
 
                 if (select.getClass() == Harbour.class) {
                     selectLabel.setText("Harbour");
                 } else if (select.getClass() == CivilAirport.class) {
                     selectLabel.setText("Civil Airport");
                 } else if (select.getClass() == MilitaryAirport.class) {
+                    militaryAdd.setVisible(true);
                     selectLabel.setText("Military Airport");
                 }
             }
 // Vehicles
             else if (Vehicle.class.isAssignableFrom(select.getClass())) {
+                selectedId = ((Vehicle)select).getId();
                 setInfo(((Vehicle)select).getPos()[0], infoX);
                 setInfo(((Vehicle)select).getPos()[1], infoY);
     // Airplane
@@ -128,6 +157,7 @@ public class Options implements Runnable {
     }
     // clear all TextAreas on the main panel
     void clearInfo() {
+        militaryAdd.setVisible(false);
         for(Component c:panel.getComponents()) {
             if (c instanceof JTextArea) {
                 ((JTextArea)c).setText("");
@@ -142,8 +172,9 @@ public class Options implements Runnable {
         handle.setText(val);
     }
     // TBD this should be removed -- attaches container and map
-    public void attach(EntityContainer container, MapSystem map) {
+    public void attach(EntityContainer container, MapSystem map, int id) {
             this.container  = container;
             this.map        = map;
+            this.recId   = id;
     }
 }

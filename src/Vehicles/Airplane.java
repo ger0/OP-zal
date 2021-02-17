@@ -6,19 +6,22 @@ public abstract class Airplane extends Vehicle {
     private int workers;
     private String nextStop;
 
-    Airplane(int workers, int id, int[] posXY, MapSystem map) {
-        super(id, posXY, map);
-        this.workers = workers;
+    Airplane(int id, int[] posXY) {
+        super(id, posXY);
         this.fuel    = 100;
     }
     @Override
-    public void draw() {
+    public synchronized void draw() {
         super.map.pushPlane(super.getId(), super.getPos());
     }
-
     // emergency landing
     public void emergency() {
         // ...
+    }
+    @Override
+    void update() {
+        super.update();
+        fuel--;
     }
 
     public synchronized int      getFuel()       { return this.fuel;        }
