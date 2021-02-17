@@ -23,14 +23,9 @@ public abstract class Airplane extends Vehicle {
         super.update();
         fuel--;
     }
-
     public synchronized int      getFuel()       { return this.fuel;        }
     public synchronized int      getWorkers()    { return this.workers;     }
 
-    public synchronized void setFuel(int fuel) {
-        this.fuel = fuel;
-    }
-    public synchronized void setWorkers(int workers) {
-        this.workers = workers;
-    }
+    public synchronized void setFuel(int fuel)          { this.fuel = fuel;         }
+    public synchronized void setWorkers(int workers)    { this.workers = workers;   }
 }

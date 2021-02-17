@@ -11,9 +11,6 @@ public class Application {
         int id = 1;
 
         try {
-            Options gui = new Options();
-            gui.start();
-            MapSystem map = new MapSystem(SIZE, DENSITY, gui);
             EntityContainer container = new EntityContainer();
 
             int amnt = 8;
@@ -22,13 +19,21 @@ public class Application {
                 int[] xy = {(int)(Math.cos((double)id * 3.14 * 2 / amnt) * drawSize + SIZE / 2),
                             (int)(Math.sin((double)id * 3.14 * 2 / amnt) * drawSize + SIZE / 2)};
                 if (id % 3 == 0) {
-                    container.add(new MilitaryAirport(id, "Bob", 20, xy, map), id);
+                    MilitaryAirport port = new MilitaryAirport(id, xy);
+                    port.setCapacity(2);
+                    port.setType("Bob");
+                    container.add(port, id);
                 } else {
-                    container.add(new CivilAirport(id, 5, xy, map), id);
+                    CivilAirport port = new CivilAirport(id, xy);
+                    port.setCapacity(3);
+                    container.add(port, id);
                 }
                 id++;
             }
+            Options gui = new Options();
+            MapSystem map = new MapSystem(SIZE, DENSITY, gui);
             gui.attach(container, map, id);
+            gui.start();
 
             while (true) {
                 map.repaint(container);

@@ -29,13 +29,13 @@ public class EntityContainer {
 
         return stations.getOrDefault(key, null);
     }
-    public Map<Integer, Airplane> getPlanes() {
+    public synchronized Map<Integer, Airplane> getPlanes() {
         return this.planes;
     }
-    public Map<Integer, Ship> getShips() {
+    public synchronized Map<Integer, Ship> getShips() {
         return this.ships;
     }
-    public Map<Integer, Place> getPlaces() {
+    public synchronized Map<Integer, Place> getPlaces() {
         return this.stations;
     }
 

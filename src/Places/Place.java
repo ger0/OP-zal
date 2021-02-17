@@ -1,19 +1,15 @@
 package Places;
 
-import Core.MapSystem;
 import Core.Shapes.Square;
 
 public abstract class Place {
     private int id;
     private int capacity;
     private int[] posXY;
-    private MapSystem map;
 
-    Place(int id, int capacity, int[] posXY, MapSystem map) {
+    Place(int id, int[] posXY) {
         this.id         = id;
-        this.capacity   = capacity;
         this.posXY      = posXY;
-        this.map        = map;
     }
     public abstract Square render(int size);
     public int[] getPos() {
@@ -21,5 +17,10 @@ public abstract class Place {
     }
     public int getId() {
         return id;
+    }
+    public void setCapacity(int cap) {
+        if (cap > 2) {
+            this.capacity = cap;
+        }
     }
 }

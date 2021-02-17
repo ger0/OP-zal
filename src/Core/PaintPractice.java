@@ -5,20 +5,19 @@ import Core.Shapes.Square;
 
 import java.awt.*;
 import javax.swing.JPanel;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
 
 public class PaintPractice extends JPanel {
-    private List<Circle> points = new ArrayList<>();
-    private List<Square> consts = new ArrayList<>();
+    private Vector<Circle> points = new Vector<>();
+    private Vector<Square> consts = new Vector<>();
 
-    public void push(Circle c) {
+    public synchronized void push(Circle c) {
         points.add(c);
     }
-    public void push(Square s) {
+    public synchronized void push(Square s) {
         consts.add(s);
     }
-    public void paintComponent(Graphics g) {
+    public synchronized void paintComponent(Graphics g) {
         super.paintComponent(g);
         for (Square s: consts) {
             s.draw(g);
@@ -27,5 +26,6 @@ public class PaintPractice extends JPanel {
             c.draw(g);
         }
         points.clear();
+        consts.clear();
     }
 }
