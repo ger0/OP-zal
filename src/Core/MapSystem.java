@@ -42,10 +42,12 @@ public class MapSystem extends JFrame {
             panel.push((c.getPlaces().get(key)).render(gridSize));
         }
         for (Integer key: c.getPlanes().keySet()) {
-            panel.push((c.getPlanes().get(key)).render(gridSize));
+            if (c.getPlanes().get(key).renderable())
+                panel.push((c.getPlanes().get(key)).render(gridSize));
         }
         for (Integer key: c.getShips().keySet()) {
-            panel.push((c.getShips().get(key)).render(gridSize));
+            if (c.getShips().get(key).renderable())
+                panel.push((c.getShips().get(key)).render(gridSize));
         }
         super.repaint();
     }

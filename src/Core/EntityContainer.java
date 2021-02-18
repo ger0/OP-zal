@@ -44,13 +44,13 @@ public class EntityContainer {
         if (size >= 1) {
             for (Integer key: planes.keySet()) {
                 int[] refXY = (planes.get(key)).getPos();
-                if (isColliding(xy, size, refXY)) {
+                if (planes.get(key).renderable() && isColliding(xy, size, refXY)) {
                     return planes.get(key);
                 }
             }
             for (Integer key: ships.keySet()) {
                 int[] refXY = (ships.get(key)).getPos();
-                if (isColliding(xy, size, refXY)) {
+                if (ships.get(key).renderable() && isColliding(xy, size, refXY)) {
                     return ships.get(key);
                 }
             }

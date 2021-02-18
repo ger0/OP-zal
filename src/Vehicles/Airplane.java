@@ -21,7 +21,9 @@ public abstract class Airplane extends Vehicle {
     @Override
     void update() {
         super.update();
-        fuel--;
+        if (super.renderable()) {
+            fuel--;
+        }
     }
     public synchronized int      getFuel()       { return this.fuel;        }
     public synchronized int      getWorkers()    { return this.workers;     }

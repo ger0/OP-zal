@@ -83,7 +83,7 @@ public class Options implements Runnable {
                 Place   out = (Place)container.get((Integer)comboBox.getSelectedItem());
                 Vehicle in = (Vehicle)container.get(selectedId);
                 if (out != null && in != null) {
-                    in.setTarget(out.getPos());
+                    in.setTarget(out.getPos(), out);
                 }
             }
         });
@@ -120,6 +120,9 @@ public class Options implements Runnable {
             if (Place.class.isAssignableFrom(select.getClass())) {
                 setInfo(((Place)select).getPos()[0], infoX);
                 setInfo(((Place)select).getPos()[1], infoY);
+
+                setInfo(((Place)select).getCapacity(), infoCap);
+                setInfo(((Place)select).getLoad(), infoLoad);
                 selectedId = ((Place)select).getId();
 
                 if (select.getClass() == Harbour.class) {
