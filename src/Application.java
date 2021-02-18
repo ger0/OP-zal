@@ -30,6 +30,9 @@ public class Application {
                 }
                 id++;
             }
+            container.add(new Harbour(id, new int[]{20, SIZE - 20}), id++);
+            container.add(new Harbour(id, new int[]{SIZE - 20, 20}), id++);
+
             Options gui = new Options();
             MapSystem map = new MapSystem(SIZE, DENSITY, gui);
             gui.attach(container, map, id);

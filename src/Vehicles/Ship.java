@@ -9,6 +9,7 @@ public abstract class Ship extends Vehicle {
 
     Ship(int id, int[] posXY) {
         super(id, posXY);
+        setMaxSpeed(5);
     }
     public void setMaxSpeed(int speed) {
         if (speed > 5) {

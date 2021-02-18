@@ -5,10 +5,10 @@ import Core.Shapes.Circle;
 
 public abstract class Vehicle implements Runnable {
     private final int id;
-    private int velocity = 2;
+    private int velocity = 6;
     private Thread t;
     private final int[] posXY;
-    private int[] targetXY = new int[] {300, 300};
+    private int[] targetXY;
 
     MapSystem map;
 

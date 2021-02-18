@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
 
 public class Options implements Runnable {
     private EntityContainer container;
@@ -28,11 +29,16 @@ public class Options implements Runnable {
     private JTextArea infoFuel, infoWork, infoCompany, infoSpeed,
                         infoCap, infoLoad, infoWeapon;
     private JTextArea infoX, infoY;
+
     private JButton vehRemove, passengerAdd, cruiseAdd,
-                    carrierAdd, militaryAdd;
-    private JComboBox comboBox1;
+                    carrierAdd, militaryAdd, changeDestination;
+
+    // destination
+    private JComboBox comboBox;
+    private JLabel labDest;
 
     public Options() {
+        clearInfo();
         vehRemove.addActionListener(actionEvent -> {
             container.remove(selectedId);
             clearInfo();
@@ -69,6 +75,16 @@ public class Options implements Runnable {
                 p.setMaxSpeed(Integer.parseUnsignedInt(infoSpeed.getText()));
                 container.add(p, recId);
             recId++;
+            }
+        });
+        changeDestination.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Place   out = (Place)container.get((Integer)comboBox.getSelectedItem());
+                Vehicle in = (Vehicle)container.get(selectedId);
+                if (out != null && in != null) {
+                    in.setTarget(out.getPos());
+                }
             }
         });
     }
@@ -120,6 +136,11 @@ public class Options implements Runnable {
                 selectedId = ((Vehicle)select).getId();
                 setInfo(((Vehicle)select).getPos()[0], infoX);
                 setInfo(((Vehicle)select).getPos()[1], infoY);
+
+                comboBox.setVisible(true);
+                changeDestination.setVisible(true);
+                Map<Integer, Place> ref = container.getPlaces();
+
     // Airplane
                 if (Airplane.class.isAssignableFrom(select.getClass())) {
                     setInfo(((Airplane)select).getFuel(),       infoFuel);
@@ -129,15 +150,18 @@ public class Options implements Runnable {
                         selectLabel.setText("Passenger Plane");
                         setInfo(((PassengerPlane)select).getCapacity(), infoCap);
                         setInfo(((PassengerPlane)select).getLoad(),     infoLoad);
+                        setComboBox(ref, CivilAirport.class);
         // Military Plane
                     } else if (select.getClass() == MilitaryPlane.class) {
                         selectLabel.setText("Military Plane");
                         setInfo(((MilitaryPlane)select).getType(), infoWeapon);
+                        setComboBox(ref, MilitaryAirport.class);
                     }
                 }
     // Ship
                 else if (Ship.class.isAssignableFrom(select.getClass())) {
                     setInfo(((Ship)select).getMaxSpeed(), infoSpeed);
+                    setComboBox(ref, Harbour.class);
         // Carrier Ship
                     if (select.getClass() == CarrierShip.class) {
                         selectLabel.setText("Carrier Ship");
@@ -156,6 +180,11 @@ public class Options implements Runnable {
     // clear all TextAreas on the main panel
     void clearInfo() {
         militaryAdd.setVisible(false);
+        comboBox.removeAllItems();
+        comboBox.setVisible(false);
+        changeDestination.setVisible(false);
+        labDest.setVisible(false);
+
         for(Component c:panel.getComponents()) {
             if (c instanceof JTextArea) {
                 ((JTextArea)c).setText("");
@@ -168,6 +197,13 @@ public class Options implements Runnable {
     }
     void setInfo(String val, JTextArea handle) {
         handle.setText(val);
+    }
+    void setComboBox(Map<Integer, Place> ref, Class T) {
+        for (Integer key : ref.keySet()) {
+            if (ref.get(key).getClass() == T) {
+                comboBox.addItem(key);
+            }
+        }
     }
     // TBD this should be removed -- attaches container and map
     public void attach(EntityContainer container, MapSystem map, int id) {
