@@ -54,8 +54,11 @@ public abstract class Vehicle implements Runnable {
 
             // check if target coords have been reached
             if (checkCollision()) {
-                setRenderable(false);
-                targetStation.setVehicle(this.id);
+                if (targetStation.setVehicle(this.id)) {
+                    setRenderable(false);
+                } else {
+                    // dodaje do kolejki!
+                }
             }
         }
     }
@@ -77,6 +80,10 @@ public abstract class Vehicle implements Runnable {
         this.map = map;
     }
     public boolean setTarget(int[] tar, Place ref) {
+        if (!isRenderable) {
+            targetStation.removeVeh(this.id);
+            isRenderable = true;
+        }
         if (tar.length == 2 && id > 0) {
             if (tar[0] < map.getMapSize() &&
                     tar[0] > 0 && tar[1] > 0 &&

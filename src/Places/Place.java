@@ -5,9 +5,9 @@ import Core.Shapes.Square;
 import java.util.Vector;
 
 public abstract class Place {
-    private int id;
+    private final int id;
+    private final int[] posXY;
     private int capacity;
-    private int[] posXY;
 
     Vector<Integer> stored;
 
@@ -18,6 +18,21 @@ public abstract class Place {
         stored = new Vector<>(capacity);
     }
     public abstract Square render(int size);
+
+    public void setCapacity(int cap) {
+        if (cap >= 2) {
+            this.capacity = cap;
+            stored = new Vector<>(capacity);
+        }
+    }
+    public synchronized boolean setVehicle(int vId) {
+        if ((stored.size()) < capacity) {
+            stored.add(vId);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public int[] getPos() {
         return posXY;
@@ -31,16 +46,10 @@ public abstract class Place {
     public int getCapacity() {
         return capacity;
     }
-
-    public void setCapacity(int cap) {
-        if (cap >= 2) {
-            this.capacity = cap;
-            stored = new Vector<>(capacity);
-        }
+    public Vector<Integer> getStoredVehicles() {
+        return stored;
     }
-    public synchronized void setVehicle(int vId) {
-        if ((stored.size() + 1) < capacity) {
-            stored.add(vId);
-        }
+    public void removeVeh(int id) {
+        stored.removeElement(id);
     }
 }

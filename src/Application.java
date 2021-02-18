@@ -4,9 +4,6 @@ import Core.Options;
 import Places.*;
 
 public class Application {
-    public static void thonk() {
-        System.out.println("TESTING");
-    }
     public static void main(String[] args) {
         // rozmiar kwadratu mapy wraz z iloscia pkt. na mapie
         final int SIZE      = 600;
