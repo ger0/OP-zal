@@ -1,7 +1,8 @@
 package Core;
 
-import Places.*;
-import Vehicles.*;
+import Entities.Places.*;
+import Entities.Vehicles.*;
+import Entities.Viewable;
 
 import javax.swing.*;
 
@@ -72,7 +73,7 @@ public class Options implements Runnable {
             public void actionPerformed(ActionEvent actionEvent) {
                 MilitaryPlane p = new MilitaryPlane(recId, currentXY);
                 p.setMap(map);
-                p.setType(infoWeapon.getText());
+                p.setWeapon(infoWeapon.getText());
                 p.setWorkers(Integer.parseUnsignedInt(infoWork.getText()));
                 container.add(p, recId);
                 recId++;
@@ -119,7 +120,10 @@ public class Options implements Runnable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (comboBox.getSelectedItem() != null) {
-                    setSelection(container.get((int) comboBox.getSelectedItem()));
+                    int id = (int)comboBox.getSelectedItem();
+                    Viewable ref = (Viewable) container.get(id);
+                    if (container.get(id) != null);
+                        setSelection(ref);
                 }
             }
         });
@@ -145,91 +149,63 @@ public class Options implements Runnable {
         setInfo(xy[0], infoX);
         setInfo(xy[1], infoY);
         Object select = container.findByPos(xy, map.getGridSize());
-        setSelection(select);
-    }
-    void setSelection(Object select) {
-        clearInfo();
-        if (select == null) {
-            selectLabel.setText("None");
-            addVehPanel.setVisible(true);
+
+        if (select != null) {
+            setSelection((Viewable)select);
         } else {
-            comboPanel.setVisible(true);
-// Places - Stations
-            if (Place.class.isAssignableFrom(select.getClass())) {
-                setInfo(((Place)select).getPos()[0], infoX);
-                setInfo(((Place)select).getPos()[1], infoY);
+            clearInfo();
+            selectLabel.setText("None");
+            addPlanePanel.setVisible(true);
+            addShipPanel.setVisible(true);
+        }
+    }
+    void setSelection(Viewable select) {
+        clearInfo();
+        comboPanel.setVisible(true);
 
-                setInfo(((Place)select).getCapacity(),  infoCap);
-                setInfo(((Place)select).getLoad(),      infoLoad);
-                selectedId = ((Place)select).getId();
+        selectedId = select.getId();
+        selectLabel.setText(select.getType());
 
-                addVehPanel.setVisible(false);
-                selectVehicle.setVisible(true);
-                labCombo.setText("Select vehicle");
-                setComboBox(((Place)select).getStoredVehicles());
+        setInfo(select.getPos()[0],     infoX);
+        setInfo(select.getPos()[1],     infoY);
 
-                if (select.getClass() == Harbour.class) {
-                    selectLabel.setText("Harbour");
-                } else {
-                    if (select.getClass() == CivilAirport.class) {
-                        selectLabel.setText("Civil Airport");
-                    } else if (select.getClass() == MilitaryAirport.class) {
-                        militaryAdd.setVisible(true);
-                        selectLabel.setText("Military Airport");
-                    }
-                }
+        setInfo(select.getCapacity(),   infoCap);
+        setInfo(select.getLoad(),       infoLoad);
+        setInfo(select.getMaxSpeed(),   infoSpeed);
+        setInfo(select.getFuel(),       infoFuel);
+        setInfo(select.getWorkers(),    infoWork);
+        setInfo(select.getWeapon(),     infoWeapon);
+        setInfo(select.getCompany(),    infoCompany);
+
+        if (select.canSetDestination()) {
+            addPlanePanel.setVisible(false);
+            addShipPanel.setVisible(false);
+
+            vehRemove.setVisible(true);
+            setDest.setVisible(true);
+
+            labCombo.setText("Change destination");
+            Map<Integer, Place> ref = container.getPlaces();
+
+            if (select.getType().equals("PassengerPlane")) {
+                setComboBox(ref, CivilAirport.class);
             }
-// Vehicles
-            else if (Vehicle.class.isAssignableFrom(select.getClass())) {
-                vehRemove.setVisible(true);
-
-                selectedId = ((Vehicle)select).getId();
-                setInfo(((Vehicle)select).getPos()[0], infoX);
-                setInfo(((Vehicle)select).getPos()[1], infoY);
-
-                setDest.setVisible(true);
-
-                setDest.setText("Set Destination");
-                labCombo.setText("Change destination");
-                Map<Integer, Place> ref = container.getPlaces();
-
-    // Airplane
-                if (Airplane.class.isAssignableFrom(select.getClass())) {
-                    setInfo(((Airplane)select).getFuel(),       infoFuel);
-                    setInfo(((Airplane)select).getWorkers(),    infoWork);
-        // Passenger Plane
-                    if (select.getClass() == PassengerPlane.class) {
-                        selectLabel.setText("Passenger Plane");
-                        setInfo(((PassengerPlane)select).getCapacity(), infoCap);
-                        setInfo(((PassengerPlane)select).getLoad(),     infoLoad);
-                        setComboBox(ref, CivilAirport.class);
-        // Military Plane
-                    } else if (select.getClass() == MilitaryPlane.class) {
-                        selectLabel.setText("Military Plane");
-                        setInfo(((MilitaryPlane)select).getType(), infoWeapon);
-                        setComboBox(ref, MilitaryAirport.class);
-                    }
-                }
-    // Ship
-                else if (Ship.class.isAssignableFrom(select.getClass())) {
-                    setInfo(((Ship)select).getMaxSpeed(), infoSpeed);
-                    setComboBox(ref, Harbour.class);
-        // Carrier Ship
-                    if (select.getClass() == CarrierShip.class) {
-                        selectLabel.setText("Carrier Ship");
-
-                        militaryAdd.setVisible(true);
-                        addPlanePanel.setVisible(true);
-                        setInfo(((CarrierShip)select).getWeapon(), infoWeapon);
-        // Cruise Ship
-                    } else if (select.getClass() == CruiseShip.class) {
-                        selectLabel.setText("Cruise Ship");
-                        setInfo(((CruiseShip)select).getCapacity(), infoCap);
-                        setInfo(((CruiseShip)select).getLoad(),     infoLoad);
-                        setInfo(((CruiseShip)select).getCompany(),  infoCompany);
-                    }
-                }
+            else if (select.getType().equals("MilitaryPlane")) {
+                setComboBox(ref, MilitaryAirport.class);
             }
+            else if (select.getType().equals("CarrierShip") ||
+                     select.getType().equals("CruiseShip")) {
+                setComboBox(ref, Harbour.class);
+            }
+        }
+        else if (select.canStoreVehicles()) {
+            selectVehicle.setVisible(true);
+            labCombo.setText("Select vehicle");
+            setComboBox(select.getStoredVehicles());
+        }
+        if (select.spawnsMilitary()) {
+            addPlanePanel.setVisible(true);
+            militaryAdd.setVisible(true);
         }
         frame.pack();
     }
@@ -251,7 +227,11 @@ public class Options implements Runnable {
     }
     // display information about currently selected object
     void setInfo(int val, JTextArea handle) {
-        handle.setText(Integer.toString(val));
+        if (val > -1) {
+            handle.setText(Integer.toString(val));
+        } else {
+            handle.setText("");
+        }
     }
     void setInfo(String val, JTextArea handle) {
         handle.setText(val);

@@ -1,4 +1,4 @@
-package Vehicles;
+package Entities.Vehicles;
 
 public class PassengerPlane extends Airplane {
     private int capacity;
@@ -7,8 +7,6 @@ public class PassengerPlane extends Airplane {
     public PassengerPlane(int id, int[] posXY) {
         super(id, posXY);
     }
-    public int getCapacity() { return this.capacity; }
-    public int getLoad()     { return this.load; }
 
     public void setCapacity(int cap) {
         if (cap > 100) {
@@ -28,4 +26,9 @@ public class PassengerPlane extends Airplane {
             this.load = load;
         }
     }
+    public String getType() {
+        return "PassengerPlane";
+    }
+    public int getCapacity() { return this.capacity; }
+    public int getLoad()     { return this.load; }
 }

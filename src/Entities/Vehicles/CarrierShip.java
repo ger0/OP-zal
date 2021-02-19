@@ -1,4 +1,4 @@
-package Vehicles;
+package Entities.Vehicles;
 
 public class CarrierShip extends Ship {
     private String weaponName;
@@ -15,8 +15,14 @@ public class CarrierShip extends Ship {
         MilitaryPlane plane = new MilitaryPlane(id, super.getPos());
         plane.setMap(map);
         plane.setFuel(5000);
-        plane.setType(weaponName);
+        plane.setWeapon(weaponName);
         plane.setWorkers(2);
         return plane;
+    }
+    public String getType() {
+        return "CarrierShip";
+    }
+    public boolean spawnsMilitary() {
+        return true;
     }
 }

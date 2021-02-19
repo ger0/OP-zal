@@ -1,10 +1,11 @@
-package Vehicles;
+package Entities.Vehicles;
 
 import Core.MapSystem;
 import Core.Shapes.Circle;
-import Places.Place;
+import Entities.Places.Place;
+import Entities.Viewable;
 
-public abstract class Vehicle implements Runnable {
+public abstract class Vehicle implements Runnable, Viewable {
     private Thread t;
 
     private final int   id;
@@ -13,7 +14,7 @@ public abstract class Vehicle implements Runnable {
     private int[]       targetXY;
     protected Place     targetStation;
 
-    private int tileHas, tileWants;
+    private int tileHas;
 
     protected boolean   isRenderable = true;
     private boolean     isRunning    = true;
@@ -50,7 +51,8 @@ public abstract class Vehicle implements Runnable {
             try {
                 map.releaseLock(tileHas, this);
                 System.out.println("Unlocked tile");
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -62,22 +64,18 @@ public abstract class Vehicle implements Runnable {
         System.out.println("Stopping thread: VEHICLE");
     }
     public abstract Circle render(int size);
-    void changeVelocity(int vel) {
-        if (velocity > 1) {
-            this.velocity = vel;
-        }
-    }
+
     void update() throws InterruptedException {
         if (targetXY != null && isRenderable) {
             int dirX = targetXY[0] - posXY[0];
             int dirY = targetXY[1] - posXY[1];
 
             double factor = velocity / Math.sqrt(Math.pow(dirX, 2) + Math.pow(dirY, 2));
-            int newPos[] = new int{posXY[0] + (int)(dirX * factor),
-                                   posXY[1] + (int)(dirY * factor)};
+            int newPos[] = {posXY[0] + (int)(dirX * factor),
+                            posXY[1] + (int)(dirY * factor)};
 
             if (map.calcIdx(newPos) != map.calcIdx(posXY)) {
-                tileWants = map.acquireLock(map.calcIdx(newPos), this);
+                int tileWants = map.acquireLock(map.calcIdx(newPos), this);
                 map.releaseLock(tileHas,  this);
                 tileHas = tileWants;
             }
@@ -126,5 +124,9 @@ public abstract class Vehicle implements Runnable {
             }
         }
         return false;
+    }
+
+    public boolean canSetDestination() {
+        return true;
     }
 }

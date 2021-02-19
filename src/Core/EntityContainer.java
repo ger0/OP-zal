@@ -1,7 +1,7 @@
 package Core;
 
-import Vehicles.*;
-import Places.*;
+import Entities.Vehicles.*;
+import Entities.Places.*;
 
 import java.util.Map;
 import java.util.HashMap;

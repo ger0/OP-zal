@@ -1,10 +1,11 @@
-package Places;
+package Entities.Places;
 
 import Core.Shapes.Square;
+import Entities.Viewable;
 
 import java.util.Vector;
 
-public abstract class Place {
+public abstract class Place implements Viewable {
     private final int id;
     private final int[] posXY;
     private int capacity;
@@ -51,5 +52,9 @@ public abstract class Place {
     }
     public void removeVeh(int id) {
         stored.removeElement(id);
+    }
+
+    public boolean canStoreVehicles() {
+        return true;
     }
 }

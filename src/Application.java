@@ -1,7 +1,7 @@
 import Core.EntityContainer;
 import Core.MapSystem;
 import Core.Options;
-import Places.*;
+import Entities.Places.*;
 
 public class Application {
     public static void main(String[] args) {
@@ -21,7 +21,7 @@ public class Application {
                 if (id % 3 == 0) {
                     MilitaryAirport port = new MilitaryAirport(id, xy);
                     port.setCapacity(2);
-                    port.setType("Bob");
+                    port.setWeapon("Bob");
                     container.add(port, id);
                 } else {
                     CivilAirport port = new CivilAirport(id, xy);

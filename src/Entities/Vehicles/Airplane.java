@@ -1,4 +1,4 @@
-package Vehicles;
+package Entities.Vehicles;
 import Core.Shapes.Circle;
 
 import java.awt.*;

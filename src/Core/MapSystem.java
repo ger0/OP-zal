@@ -1,8 +1,7 @@
 package Core;
 
-import Vehicles.Airplane;
-import Vehicles.Ship;
-import Vehicles.Vehicle;
+import Entities.Vehicles.Airplane;
+import Entities.Vehicles.Ship;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;

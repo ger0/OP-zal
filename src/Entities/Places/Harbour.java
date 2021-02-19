@@ -1,4 +1,4 @@
-package Places;
+package Entities.Places;
 
 import Core.Shapes.Square;
 import java.awt.*;
@@ -9,5 +9,8 @@ public class Harbour extends Place {
     }
     public Square render(int size) {
         return new Square(super.getPos(), Color.GREEN, size + 10, super.getId());
+    }
+    public String getType() {
+        return "Harbour";
     }
 }

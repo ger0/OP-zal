@@ -1,4 +1,4 @@
-package Vehicles;
+package Entities.Vehicles;
 
 public class CruiseShip extends Ship {
     private int     capacity;
@@ -8,9 +8,6 @@ public class CruiseShip extends Ship {
     public CruiseShip(int id, int[] posXY) {
         super(id, posXY);
     }
-    public int      getCapacity()   { return this.capacity; }
-    public int      getLoad()       { return this.load; }
-    public String   getCompany()    { return this.company; }
 
     public void setCompany(String company) {
         this.company = company;
@@ -32,4 +29,10 @@ public class CruiseShip extends Ship {
             return true;
         }
     }
+    public String getType() {
+        return "CruiseShip";
+    }
+    public int      getCapacity()   { return this.capacity; }
+    public int      getLoad()       { return this.load; }
+    public String   getCompany()    { return this.company; }
 }
