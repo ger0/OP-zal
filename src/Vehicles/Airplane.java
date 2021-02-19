@@ -12,16 +12,16 @@ public abstract class Airplane extends Vehicle {
         this.fuel    = 10000;
     }
     public synchronized Circle render(int size) {
-        return new Circle(super.getPos(), Color.RED, size);
+        return new Circle(super.getPos(), Color.RED, size - 10);
     }
     // emergency landing
     public void emergency() {
         // ...
     }
     @Override
-    void update() {
+    void update() throws InterruptedException {
         super.update();
-        if (super.renderable()) {
+        if (isRenderable && targetStation != null) {
             fuel--;
         }
     }

@@ -36,7 +36,7 @@ public class Options implements Runnable {
                     carrierAdd, militaryAdd, setDest;
 
     // destination
-    private JComboBox comboBox;
+    private JComboBox<Integer> comboBox;
     private JLabel labCombo;
     private JButton selectVehicle;
 
@@ -54,12 +54,25 @@ public class Options implements Runnable {
             container.remove(selectedId);
             clearInfo();
         });
+        // ADDING NEW VEHICLES
         passengerAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 PassengerPlane p = new PassengerPlane(recId, currentXY);
                 p.setMap(map);
                 p.setCapacity(Integer.parseUnsignedInt(infoCap.getText()));
+                p.setWorkers(Integer.parseUnsignedInt(infoWork.getText()));
+                p.setLoad(Integer.parseUnsignedInt(infoLoad.getText()));
+                container.add(p, recId);
+                recId++;
+            }
+        });
+        militaryAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                MilitaryPlane p = new MilitaryPlane(recId, currentXY);
+                p.setMap(map);
+                p.setType(infoWeapon.getText());
                 p.setWorkers(Integer.parseUnsignedInt(infoWork.getText()));
                 container.add(p, recId);
                 recId++;
@@ -146,10 +159,11 @@ public class Options implements Runnable {
                 setInfo(((Place)select).getPos()[0], infoX);
                 setInfo(((Place)select).getPos()[1], infoY);
 
-                setInfo(((Place)select).getCapacity(), infoCap);
-                setInfo(((Place)select).getLoad(), infoLoad);
+                setInfo(((Place)select).getCapacity(),  infoCap);
+                setInfo(((Place)select).getLoad(),      infoLoad);
                 selectedId = ((Place)select).getId();
 
+                addVehPanel.setVisible(false);
                 selectVehicle.setVisible(true);
                 labCombo.setText("Select vehicle");
                 setComboBox(((Place)select).getStoredVehicles());
@@ -174,7 +188,6 @@ public class Options implements Runnable {
                 setInfo(((Vehicle)select).getPos()[1], infoY);
 
                 setDest.setVisible(true);
-                addVehPanel.setVisible(false);
 
                 setDest.setText("Set Destination");
                 labCombo.setText("Change destination");
@@ -204,6 +217,9 @@ public class Options implements Runnable {
         // Carrier Ship
                     if (select.getClass() == CarrierShip.class) {
                         selectLabel.setText("Carrier Ship");
+
+                        militaryAdd.setVisible(true);
+                        addPlanePanel.setVisible(true);
                         setInfo(((CarrierShip)select).getWeapon(), infoWeapon);
         // Cruise Ship
                     } else if (select.getClass() == CruiseShip.class) {

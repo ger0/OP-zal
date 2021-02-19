@@ -9,12 +9,14 @@ public abstract class Vehicle implements Runnable {
 
     private final int   id;
     private int         velocity = 6;
-    private final int[] posXY;
+    private int[]       posXY;
     private int[]       targetXY;
-    private Place       targetStation;
+    protected Place     targetStation;
 
-    private boolean isRenderable = true;
-    private boolean isRunning    = true;
+    private int tileHas, tileWants;
+
+    protected boolean   isRenderable = true;
+    private boolean     isRunning    = true;
 
     MapSystem map;
 
@@ -23,6 +25,11 @@ public abstract class Vehicle implements Runnable {
         this.posXY = posXY;
     }
     public void start() {
+        try {
+            tileHas = map.acquireLock(map.calcIdx(posXY), this);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println("Starting thread: VEHICLE");
         if (t == null) {
             t = new Thread(this);
@@ -30,19 +37,29 @@ public abstract class Vehicle implements Runnable {
         }
     }
     public void run() {
-        while (isRunning) {
+        try {
+            while (isRunning) {
+                try {
+                    update();
+                    Thread.sleep(150);
+                } catch (InterruptedException e) {
+                    System.out.println("Exiting Thread...");
+                }
+            }
+        } finally {
             try {
-                update();
-                Thread.sleep(150);
+                map.releaseLock(tileHas, this);
+                System.out.println("Unlocked tile");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
     public void stop() {
-        System.out.println("Stopping thread: VEHICLE");
         setTarget(new int[]{1, 1}, null);
         isRunning = false;
+        t.interrupt();
+        System.out.println("Stopping thread: VEHICLE");
     }
     public abstract Circle render(int size);
     void changeVelocity(int vel) {
@@ -50,18 +67,27 @@ public abstract class Vehicle implements Runnable {
             this.velocity = vel;
         }
     }
-    void update() {
+    void update() throws InterruptedException {
         if (targetXY != null && isRenderable) {
             int dirX = targetXY[0] - posXY[0];
             int dirY = targetXY[1] - posXY[1];
+
             double factor = velocity / Math.sqrt(Math.pow(dirX, 2) + Math.pow(dirY, 2));
-            this.posXY[0] += (int) (dirX * factor);
-            this.posXY[1] += (int) (dirY * factor);
+            int newPos[] = new int{posXY[0] + (int)(dirX * factor),
+                                   posXY[1] + (int)(dirY * factor)};
+
+            if (map.calcIdx(newPos) != map.calcIdx(posXY)) {
+                tileWants = map.acquireLock(map.calcIdx(newPos), this);
+                map.releaseLock(tileHas,  this);
+                tileHas = tileWants;
+            }
+            this.posXY = newPos;
 
             // check if target coords have been reached
             if (checkCollision()) {
                 if (targetStation.setVehicle(this.id)) {
                     setRenderable(false);
+                    map.releaseLock(map.calcIdx(posXY), this);
                 } else {
                     // dodaje do kolejki!
                 }
