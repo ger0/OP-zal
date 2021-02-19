@@ -14,6 +14,7 @@ public abstract class Vehicle implements Runnable {
     private Place       targetStation;
 
     private boolean isRenderable = true;
+    private boolean isRunning    = true;
 
     MapSystem map;
 
@@ -29,7 +30,7 @@ public abstract class Vehicle implements Runnable {
         }
     }
     public void run() {
-        while (true) {
+        while (isRunning) {
             try {
                 update();
                 Thread.sleep(150);
@@ -37,6 +38,11 @@ public abstract class Vehicle implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+    public void stop() {
+        System.out.println("Stopping thread: VEHICLE");
+        setTarget(new int[]{1, 1}, null);
+        isRunning = false;
     }
     public abstract Circle render(int size);
     void changeVelocity(int vel) {

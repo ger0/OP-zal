@@ -40,10 +40,17 @@ public class Options implements Runnable {
     private JLabel labCombo;
     private JButton selectVehicle;
 
+    private JPanel addVehPanel;
+    private JPanel infoPanel;
+    private JPanel comboPanel;
+    private JPanel coordPanel;
+    private JPanel addShipPanel;
+    private JPanel addPlanePanel;
+
     public Options() {
         clearInfo();
+        // VEHICLE REMOVAL BUTTON
         vehRemove.addActionListener(actionEvent -> {
-            ((Vehicle)container.get(selectedId)).setTarget(new int[]{1, 1}, null);
             container.remove(selectedId);
             clearInfo();
         });
@@ -131,9 +138,9 @@ public class Options implements Runnable {
         clearInfo();
         if (select == null) {
             selectLabel.setText("None");
+            addVehPanel.setVisible(true);
         } else {
-            labCombo.setVisible(true);
-            comboBox.setVisible(true);
+            comboPanel.setVisible(true);
 // Places - Stations
             if (Place.class.isAssignableFrom(select.getClass())) {
                 setInfo(((Place)select).getPos()[0], infoX);
@@ -142,13 +149,12 @@ public class Options implements Runnable {
                 setInfo(((Place)select).getCapacity(), infoCap);
                 setInfo(((Place)select).getLoad(), infoLoad);
                 selectedId = ((Place)select).getId();
-                selectVehicle.setVisible(true);
 
+                selectVehicle.setVisible(true);
                 labCombo.setText("Select vehicle");
                 setComboBox(((Place)select).getStoredVehicles());
 
                 if (select.getClass() == Harbour.class) {
-                    setDest.setText("Select Ship");
                     selectLabel.setText("Harbour");
                 } else {
                     if (select.getClass() == CivilAirport.class) {
@@ -162,11 +168,15 @@ public class Options implements Runnable {
 // Vehicles
             else if (Vehicle.class.isAssignableFrom(select.getClass())) {
                 vehRemove.setVisible(true);
+
                 selectedId = ((Vehicle)select).getId();
                 setInfo(((Vehicle)select).getPos()[0], infoX);
                 setInfo(((Vehicle)select).getPos()[1], infoY);
-                setDest.setVisible(true);
 
+                setDest.setVisible(true);
+                addVehPanel.setVisible(false);
+
+                setDest.setText("Set Destination");
                 labCombo.setText("Change destination");
                 Map<Integer, Place> ref = container.getPlaces();
 
@@ -212,13 +222,12 @@ public class Options implements Runnable {
         militaryAdd.setVisible(false);
         vehRemove.setVisible(false);
 
-        labCombo.setVisible(false);
         comboBox.removeAllItems();
-        comboBox.setVisible(false);
         setDest.setVisible(false);
         selectVehicle.setVisible(false);
+        comboPanel.setVisible(false);
 
-        for(Component c:panel.getComponents()) {
+        for(Component c: infoPanel.getComponents()) {
             if (c instanceof JTextArea) {
                 ((JTextArea)c).setText("");
             }

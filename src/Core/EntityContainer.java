@@ -16,6 +16,7 @@ public class EntityContainer {
     public void add(Place place, int key)       { stations.put(key, place); }
 
     public void remove(int key) {
+        ((Vehicle)get(key)).stop();
         ships.remove(key);
         planes.remove(key);
     }
