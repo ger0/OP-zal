@@ -34,17 +34,15 @@ public class Options implements Runnable {
     private JTextArea infoX, infoY;
 
     private JButton vehRemove, passengerAdd, cruiseAdd,
-                    carrierAdd, militaryAdd, setDest;
+                    carrierAdd, militaryAdd, emergencyButton;
 
-    // destination
+    // destination | stored vehicles inside a station
     private JComboBox<Integer> comboBox;
     private JLabel labCombo;
-    private JButton selectVehicle;
+    private JButton selectVehicle, setDest;
 
-    private JPanel infoPanel;
-    private JPanel comboPanel;
-    private JPanel addShipPanel;
-    private JPanel addPlanePanel;
+    private JPanel infoPanel, comboPanel, addShipPanel,
+                   addPlanePanel, emergencyLanding, addVehiclePanel;
 
     public Options() {
         clearInfo();
@@ -53,53 +51,37 @@ public class Options implements Runnable {
             container.remove(selectedId);
             clearInfo();
         });
+
         // ADDING NEW VEHICLES
         passengerAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 PassengerPlane p = new PassengerPlane(recId, currentXY);
-                p.setMap(map);
-                p.setCapacity(Integer.parseUnsignedInt(infoCap.getText()));
-                p.setWorkers(Integer.parseUnsignedInt(infoWork.getText()));
-                p.setLoad(Integer.parseUnsignedInt(infoLoad.getText()));
-                container.add(p, recId);
-                recId++;
+                addVehicleHandler(p);
             }
         });
         militaryAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 MilitaryPlane p = new MilitaryPlane(recId, currentXY);
-                p.setMap(map);
-                p.setWeapon(infoWeapon.getText());
-                p.setWorkers(Integer.parseUnsignedInt(infoWork.getText()));
-                container.add(p, recId);
-                recId++;
+                addVehicleHandler(p);
             }
         });
         carrierAdd.addActionListener(new ActionListener() {
              @Override
              public void actionPerformed(ActionEvent actionEvent) {
                  CarrierShip p = new CarrierShip(recId, currentXY);
-                 p.setMap(map);
-                 p.setWeapon(infoWeapon.getText());
-                 p.setMaxSpeed(Integer.parseUnsignedInt(infoSpeed.getText()));
-                 container.add(p, recId);
-                 recId++;
+                 addVehicleHandler(p);
              }
         });
         cruiseAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 CruiseShip p = new CruiseShip(recId, currentXY);
-                p.setMap(map);
-                p.setCompany(infoCompany.getText());
-                p.setCapacity(Integer.parseUnsignedInt(infoCap.getText()));
-                p.setMaxSpeed(Integer.parseUnsignedInt(infoSpeed.getText()));
-                container.add(p, recId);
-            recId++;
+                addVehicleHandler(p);
             }
         });
+
         // DESTINATION BUTTON LISTENER
         setDest.addActionListener(new ActionListener() {
             @Override
@@ -113,6 +95,7 @@ public class Options implements Runnable {
                 }
             }
         });
+
         // SELECTION COMBOBOX BUTTON LISTENER
         selectVehicle.addActionListener(new ActionListener() {
             @Override
@@ -120,13 +103,31 @@ public class Options implements Runnable {
                 if (comboBox.getSelectedItem() != null) {
                     int id = (int)comboBox.getSelectedItem();
                     Viewable ref = (Viewable) container.get(id);
-                    if (container.get(id) != null);
+                    if (container.get(id) != null) {
                         setSelection(ref);
+                    }
                 }
             }
         });
+        // emergency landing on a closest available airport
+        emergencyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Vehicle obj = (Vehicle)container.get(selectedId);
+                Place closest = null;
+
+                if (obj.getClass() == MilitaryPlane.class) {
+                    closest = container.findClosestAirport(
+                            obj.getPos(), MilitaryAirport.class);
+                } else {
+                    closest = container.findClosestAirport(
+                            obj.getPos(), CivilAirport.class);
+                }
+                obj.setTarget(closest.getPos(), closest);
+            }
+        });
     }
-    // thread ------------------------------------------------------
+    // thread ----------------------------------------------------------------------
     public void start() {
         System.out.println("Starting thread: Options");
         if (t == null) {
@@ -183,18 +184,22 @@ public class Options implements Runnable {
             setDest.setVisible(true);
 
             labCombo.setText("Change destination");
+
             Map<Integer, Place> ref = container.getPlaces();
 
             if (select.getType().equals("PassengerPlane")) {
                 setComboBox(ref, CivilAirport.class);
+                emergencyLanding.setVisible(true);
             }
             else if (select.getType().equals("MilitaryPlane")) {
                 setComboBox(ref, MilitaryAirport.class);
+                emergencyLanding.setVisible(true);
             }
             else if (select.getType().equals("CarrierShip") ||
                      select.getType().equals("CruiseShip")) {
                 setComboBox(ref, Harbour.class);
             }
+            comboBox.setSelectedItem(select.getSelected());
         }
         else if (select.canStoreVehicles()) {
             selectVehicle.setVisible(true);
@@ -209,8 +214,10 @@ public class Options implements Runnable {
     }
     // clear all TextAreas on the main panel
     void clearInfo() {
+        addVehiclePanel.setVisible(true);
         militaryAdd.setVisible(false);
         vehRemove.setVisible(false);
+        emergencyLanding.setVisible(false);
 
         comboBox.removeAllItems();
         setDest.setVisible(false);
@@ -247,7 +254,33 @@ public class Options implements Runnable {
         }
     }
 
-    // TBD this should be removed -- attaches container and map
+    // adding new vehicles
+    int infoAsInt(JTextArea val) throws NumberFormatException {
+        if (val.getText().equals("")) {
+            return -1;
+        } else {
+            return Integer.parseUnsignedInt(val.getText());
+        }
+    }
+    void addVehicleHandler(Vehicle obj) {
+        try {
+            obj.setMap(map);
+
+            obj.setCompany(infoCompany.getText());
+            obj.setWeapon(infoWeapon.getText());
+
+            obj.setCapacity(infoAsInt(infoCap));
+            obj.setWorkers(infoAsInt(infoWork));
+            obj.setLoad(infoAsInt(infoLoad));
+            obj.setMaxSpeed(infoAsInt(infoSpeed));
+
+            container.add(obj, recId++);
+        } catch (NumberFormatException e) {
+            System.out.println("INCORRECT INPUT FORMAT!");
+        }
+    }
+
+    // TBD remove
     public void attach(EntityContainer container, MapSystem map, int id) {
             this.container  = container;
             this.map        = map;

@@ -1,49 +1,60 @@
 package Entities;
 
+import Core.MapSystem;
+
 import java.util.Vector;
 
-public interface Viewable {
-    public abstract int[]  getPos();
-    public abstract int    getId();
-    public abstract String getType();
+ public interface Viewable {
+     int[]  getPos();
+     int    getId();
+     String getType();
 
-    public default int getCapacity() {
+     default int getCapacity() {
         return -1;
     }
-    public default int getLoad() {
+     default int getLoad() {
         return -1;
     }
-    public default int getMaxSpeed() {
+     default int getMaxSpeed() {
         return -1;
     }
-    public default int getFuel() {
+     default int getFuel() {
         return -1;
     }
-    public default int getWorkers() {
+     default int getWorkers() {
         return -1;
     }
 
     // stored vehicles
-    public default boolean canStoreVehicles() {
+     default boolean canStoreVehicles() {
         return false;
     }
-    public default Vector<Integer> getStoredVehicles() {
+     default Vector<Integer> getStoredVehicles() {
         return null;
     }
 
-    public default boolean canSetDestination() {
+     default boolean canSetDestination() {
         return false;
     }
-    public default String getWeapon() {
+     default String getWeapon() {
         return "";
     }
-    public default String getCompany() {
+     default String getCompany() {
         return "";
     }
-    public default boolean spawnsMilitary() {
+     default int getSelected() {
+        return -1;
+    }
+     default boolean spawnsMilitary() {
         return false;
     }
-    public default Class   getClassType() {
-        return null;
+
+     default void     setMap(MapSystem map) {
     }
+     default void     setCapacity(int x) {}
+     default void     setWorkers(int x) {}
+     default void     setLoad(int x) {}
+     default void     setMaxSpeed(int x) {}
+     default void     setWeapon(String s) {}
+     default void     setCompany(String s) {}
 }

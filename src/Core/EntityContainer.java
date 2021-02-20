@@ -2,6 +2,7 @@ package Core;
 
 import Entities.Vehicles.*;
 import Entities.Places.*;
+import Entities.Viewable;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -11,8 +12,16 @@ public class EntityContainer {
     private final Map<Integer, Ship>      ships       = new HashMap<>();
     private final Map<Integer, Place>     stations    = new HashMap<>();
 
-    public void add(Airplane plane, int key)    { planes.put(key, plane);   plane.start();}
-    public void add(Ship ship, int key)         { ships.put(key, ship);     ship.start();}
+    public void add(Vehicle veh, int key) {
+        Class type = veh.getClass();
+        if (Airplane.class.isAssignableFrom(type)) {
+            planes.put(key, (Airplane)veh);
+            veh.start();
+        } else if (Ship.class.isAssignableFrom(type)) {
+            ships.put(key, (Ship)veh);
+            veh.start();
+        }
+    }
     public void add(Place place, int key)       { stations.put(key, place); }
 
     public void remove(int key) {
@@ -38,6 +47,27 @@ public class EntityContainer {
     }
     public synchronized Map<Integer, Place> getPlaces() {
         return this.stations;
+    }
+
+    public Place findClosestAirport(int[] xy, Class type) {
+        int minDist = Integer.MAX_VALUE;
+        Place place = null;
+
+        for (Integer key: stations.keySet()) {
+            Viewable obj = stations.get(key);
+            if (obj.getLoad() < obj.getCapacity() &&
+                    obj.getClass() == type)
+            {
+                int[] ref = obj.getPos();
+                int dist = (int)Math.sqrt(Math.pow(ref[0] - xy[0], 2) +
+                                Math.pow(ref[1] - xy[1], 2));
+                if (dist < minDist) {
+                    minDist = dist;
+                    place = (Place)obj;
+                }
+            }
+        }
+        return place;
     }
 
     // find an entity colliding with xy coordinates

@@ -123,6 +123,13 @@ public abstract class Vehicle implements Runnable, Viewable {
     }
     public int getId()     { return this.id;       }
     public int[] getPos()   { return this.posXY;    }
+    public int getSelected() {
+        if (targetStation != null) {
+            return targetStation.getId();
+        } else {
+            return -1;
+        }
+    }
 
     public boolean canSetDestination() {
         return true;

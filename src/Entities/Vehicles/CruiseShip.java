@@ -20,13 +20,11 @@ public class CruiseShip extends Ship {
         }
     }
     // make setting adjustments later
-    public boolean setLoad(int val) {
+    public void setLoad(int val) {
         if (val > capacity && val < 0) {
             this.load = 0;
-            return false;
         } else {
             this.load = val;
-            return true;
         }
     }
     public String getType() {

@@ -7,7 +7,7 @@ public class Application {
     public static void main(String[] args) {
         // rozmiar kwadratu mapy wraz z iloscia pkt. na mapie
         final int SIZE      = 600;
-        final int DENSITY   = 30;
+        final int DENSITY   = 18;
         int id = 1;
 
         try {
