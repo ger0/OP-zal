@@ -41,10 +41,8 @@ public class Options implements Runnable {
     private JLabel labCombo;
     private JButton selectVehicle;
 
-    private JPanel addVehPanel;
     private JPanel infoPanel;
     private JPanel comboPanel;
-    private JPanel coordPanel;
     private JPanel addShipPanel;
     private JPanel addPlanePanel;
 

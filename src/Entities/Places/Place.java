@@ -3,6 +3,8 @@ package Entities.Places;
 import Core.Shapes.Square;
 import Entities.Viewable;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 
 public abstract class Place implements Viewable {
@@ -11,6 +13,7 @@ public abstract class Place implements Viewable {
     private int capacity;
 
     Vector<Integer> stored;
+    Queue<Integer>  queue = new LinkedList<>();
 
     Place(int id, int[] posXY) {
         this.id         = id;
@@ -31,6 +34,7 @@ public abstract class Place implements Viewable {
             stored.add(vId);
             return true;
         } else {
+            queue.add(vId);
             return false;
         }
     }
@@ -50,8 +54,11 @@ public abstract class Place implements Viewable {
     public Vector<Integer> getStoredVehicles() {
         return stored;
     }
-    public void removeVeh(int id) {
+    public synchronized void removeVeh(int id) {
         stored.removeElement(id);
+        if (queue.size() > 0) {
+            stored.add(queue.remove());
+        }
     }
 
     public boolean canStoreVehicles() {

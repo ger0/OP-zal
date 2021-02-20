@@ -101,7 +101,8 @@ public class MapSystem extends JFrame {
         if (idx > -1 && idx < gridDensity * gridDensity) {
             if (Airplane.class.isAssignableFrom(type.getClass())) {
                 planePlacement[idx].release();
-            } else if (Ship.class.isAssignableFrom(type.getClass())) {
+            }
+            else if (Ship.class.isAssignableFrom(type.getClass())) {
                 shipPlacement[idx].release();
             }
         }

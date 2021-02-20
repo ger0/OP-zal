@@ -71,9 +71,10 @@ public abstract class Vehicle implements Runnable, Viewable {
             int dirY = targetXY[1] - posXY[1];
 
             double factor = velocity / Math.sqrt(Math.pow(dirX, 2) + Math.pow(dirY, 2));
+
             int newPos[] = {posXY[0] + (int)(dirX * factor),
                             posXY[1] + (int)(dirY * factor)};
-
+            // semaphores
             if (map.calcIdx(newPos) != map.calcIdx(posXY)) {
                 int tileWants = map.acquireLock(map.calcIdx(newPos), this);
                 map.releaseLock(tileHas,  this);
@@ -84,10 +85,12 @@ public abstract class Vehicle implements Runnable, Viewable {
             // check if target coords have been reached
             if (checkCollision()) {
                 if (targetStation.setVehicle(this.id)) {
-                    setRenderable(false);
-                    map.releaseLock(map.calcIdx(posXY), this);
+                    isRenderable = false;
+                    map.releaseLock(tileHas, this);
                 } else {
-                    // dodaje do kolejki!
+                    // waits in queue
+                    isRenderable = false;
+                    map.releaseLock(tileHas, this);
                 }
             }
         }
@@ -96,15 +99,8 @@ public abstract class Vehicle implements Runnable, Viewable {
         return Math.abs(targetXY[0] - posXY[0]) < map.getGridSize() &&
                 Math.abs(targetXY[1] - posXY[1]) < map.getGridSize();
     }
-
-    public int getId()     { return this.id;       }
-    public int[] getPos()   { return this.posXY;    }
     public boolean renderable() {
         return isRenderable;
-    }
-
-    public void setRenderable(boolean bool) {
-        isRenderable = bool;
     }
     public void setMap(MapSystem map) {
         this.map = map;
@@ -125,6 +121,8 @@ public abstract class Vehicle implements Runnable, Viewable {
         }
         return false;
     }
+    public int getId()     { return this.id;       }
+    public int[] getPos()   { return this.posXY;    }
 
     public boolean canSetDestination() {
         return true;

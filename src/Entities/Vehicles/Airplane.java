@@ -12,7 +12,7 @@ public abstract class Airplane extends Vehicle {
         this.fuel    = 10000;
     }
     public synchronized Circle render(int size) {
-        return new Circle(super.getPos(), Color.RED, size - 10);
+        return new Circle(super.getPos(), Color.RED, size);
     }
     // emergency landing
     public void emergency() {

@@ -19,7 +19,7 @@ public abstract class Ship extends Vehicle {
         }
     }
     public synchronized Circle render(int size) {
-        return new Circle(super.getPos(), Color.BLUE, size - 10);
+        return new Circle(super.getPos(), Color.BLUE, size);
     }
     public int getMaxSpeed()    { return this.maxSpeed; }
 }
