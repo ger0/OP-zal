@@ -9,13 +9,14 @@ public abstract class Ship extends Vehicle {
 
     Ship(int id, int[] posXY) {
         super(id, posXY);
-        setMaxSpeed(5);
+        setMaxSpeed(3);
     }
-    public void setMaxSpeed(int speed) {
-        if (speed > 5) {
+    public void setMaxSpeed(int speed) throws NumberFormatException {
+        if (speed < 1) {
+            throw new NumberFormatException("Speed must be >= 1!");
+        } else if (speed > 5) {
+            // hardcapped at 5
             this.maxSpeed = 5;
-        } else {
-            this.maxSpeed = Math.max(speed, 1);
         }
     }
     public synchronized Circle render(int size) {

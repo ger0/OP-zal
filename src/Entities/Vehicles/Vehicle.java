@@ -70,7 +70,8 @@ public abstract class Vehicle implements Runnable, Viewable {
             int dirX = targetXY[0] - posXY[0];
             int dirY = targetXY[1] - posXY[1];
 
-            double factor = velocity / Math.sqrt(Math.pow(dirX, 2) + Math.pow(dirY, 2));
+            double factor = velocity / (Math.sqrt(Math.pow(dirX, 2) +
+                                        Math.pow(dirY, 2)));
 
             int newPos[] = {posXY[0] + (int)(dirX * factor),
                             posXY[1] + (int)(dirY * factor)};
@@ -83,6 +84,7 @@ public abstract class Vehicle implements Runnable, Viewable {
             this.posXY = newPos;
 
             // check if target coords have been reached
+            // stay in queue if it can't enter targetStation
             if (checkCollision()) {
                 if (targetStation.setVehicle(this.id)) {
                     isRenderable = false;

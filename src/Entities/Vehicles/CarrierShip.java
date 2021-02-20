@@ -7,17 +7,12 @@ public class CarrierShip extends Ship {
         super(id, posXY);
     }
     public String getWeapon()   { return this.weaponName; }
-    public void setWeapon(String name) {
-        weaponName = name;
-    }
-
-    public MilitaryPlane spawnPlane(int id, int fuel) {
-        MilitaryPlane plane = new MilitaryPlane(id, super.getPos());
-        plane.setMap(map);
-        plane.setFuel(5000);
-        plane.setWeapon(weaponName);
-        plane.setWorkers(2);
-        return plane;
+    public void setWeapon(String name) throws NumberFormatException {
+        if (name.equals("")) {
+            throw new NumberFormatException("Incorrect weapon name!");
+        } else {
+            weaponName = name;
+        }
     }
     public String getType() {
         return "CarrierShip";

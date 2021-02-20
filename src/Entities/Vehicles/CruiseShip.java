@@ -9,20 +9,24 @@ public class CruiseShip extends Ship {
         super(id, posXY);
     }
 
-    public void setCompany(String company) {
-        this.company = company;
-    }
-    public void setCapacity(int cap) {
-        if (cap > 10000) {
-            this.capacity = 10000;
+    public void setCompany(String company) throws NumberFormatException {
+        if (company.equals("")) {
+            throw new NumberFormatException("Please insert company's name in correct format!");
         } else {
-            this.capacity = Math.max(cap, 1);
+            this.company = company;
+        }
+    }
+    public void setCapacity(int cap) throws NumberFormatException {
+        if (cap < 0) {
+            throw new NumberFormatException("Incorrect capacity number!");
+        } else {
+            this.capacity = cap;
         }
     }
     // make setting adjustments later
-    public void setLoad(int val) {
-        if (val > capacity && val < 0) {
-            this.load = 0;
+    public void setLoad(int val) throws NumberFormatException {
+        if (val > capacity || val < 0) {
+            throw new NumberFormatException("Incorrect load number!");
         } else {
             this.load = val;
         }

@@ -9,7 +9,7 @@ public class MilitaryPlane extends Airplane {
 
     public String getWeapon() { return this.weapon; }
 
-    public void setWeapon(String type) {
+    public void setWeapon(String weapon) {
         this.weapon = weapon;
     }
     public String getType() {

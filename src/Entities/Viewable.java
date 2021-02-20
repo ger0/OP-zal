@@ -49,8 +49,8 @@ import java.util.Vector;
         return false;
     }
 
-     default void     setMap(MapSystem map) {
-    }
+     default void     setMap(MapSystem map) {}
+
      default void     setCapacity(int x) {}
      default void     setWorkers(int x) {}
      default void     setLoad(int x) {}

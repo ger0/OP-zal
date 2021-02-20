@@ -1,5 +1,6 @@
 package Entities.Vehicles;
 import Core.Shapes.Circle;
+import Entities.Places.Place;
 
 import java.awt.*;
 
@@ -14,10 +15,6 @@ public abstract class Airplane extends Vehicle {
     public synchronized Circle render(int size) {
         return new Circle(super.getPos(), Color.RED, size);
     }
-    // emergency landing
-    public void emergency() {
-        // ...
-    }
     @Override
     void update() throws InterruptedException {
         super.update();
@@ -28,6 +25,17 @@ public abstract class Airplane extends Vehicle {
     public synchronized int      getFuel()       { return this.fuel;        }
     public synchronized int      getWorkers()    { return this.workers;     }
 
-    public synchronized void setFuel(int fuel)          { this.fuel = fuel;         }
-    public synchronized void setWorkers(int workers)    { this.workers = workers;   }
+    public boolean setTarget(int[] tar, Place ref) {
+        if (!isRenderable) {
+            fuel = 10000;
+        }
+        return super.setTarget(tar, ref);
+    }
+    public synchronized void setWorkers(int workers) throws NumberFormatException {
+        if (workers < 0) {
+            throw new NumberFormatException("Input workers in proper format!");
+        } else {
+            this.workers = workers;
+        }
+    }
 }

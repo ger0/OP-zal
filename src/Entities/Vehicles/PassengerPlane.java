@@ -8,20 +8,16 @@ public class PassengerPlane extends Airplane {
         super(id, posXY);
     }
 
-    public void setCapacity(int cap) {
-        if (cap > 100) {
-            this.capacity = 100;
-        } else if (cap < 10) {
-            this.capacity = 10;
+    public void setCapacity(int cap) throws NumberFormatException {
+        if (cap < 0) {
+            throw new NumberFormatException("Incorrect capacity number!");
         } else {
             this.capacity = cap;
         }
     }
-    public void setLoad(int load) {
-        if (load < 0) {
-            this.load = 0;
-        } else if (load > this.capacity) {
-            this.load = this.capacity;
+    public void setLoad(int load) throws NumberFormatException {
+        if (load < 0 || load > this.capacity) {
+            throw new NumberFormatException("Incorrect load number!");
         } else {
             this.load = load;
         }

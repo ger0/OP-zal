@@ -63,8 +63,12 @@ public class Options implements Runnable {
         militaryAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                MilitaryPlane p = new MilitaryPlane(recId, currentXY);
+                CarrierShip ref = (CarrierShip) container.get(selectedId);
+                MilitaryPlane p = new MilitaryPlane(recId, ref.getPos());
+
+                infoWeapon.setEditable(false);
                 addVehicleHandler(p);
+                infoWeapon.setEditable(true);
             }
         });
         carrierAdd.addActionListener(new ActionListener() {
@@ -276,7 +280,8 @@ public class Options implements Runnable {
 
             container.add(obj, recId++);
         } catch (NumberFormatException e) {
-            System.out.println("INCORRECT INPUT FORMAT!");
+            System.out.println("Wrong format:");
+            System.out.println(e.getMessage());
         }
     }
 
