@@ -7,8 +7,6 @@ import Entities.Viewable;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.Vector;
 
@@ -53,16 +51,14 @@ public class Options implements Runnable {
         });
 
         // ADDING NEW VEHICLES
-        passengerAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
+        passengerAdd.addActionListener(actionEvent -> {
+            if (map.checkSemaphores(Airplane.class, currentXY)) {
                 PassengerPlane p = new PassengerPlane(recId, currentXY);
                 addVehicleHandler(p);
             }
         });
-        militaryAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
+        militaryAdd.addActionListener(actionEvent -> {
+            if (map.checkSemaphores(Airplane.class, currentXY)) {
                 CarrierShip ref = (CarrierShip) container.get(selectedId);
                 MilitaryPlane p = new MilitaryPlane(recId, ref.getPos());
 
@@ -71,64 +67,53 @@ public class Options implements Runnable {
                 infoWeapon.setEditable(true);
             }
         });
-        carrierAdd.addActionListener(new ActionListener() {
-             @Override
-             public void actionPerformed(ActionEvent actionEvent) {
-                 CarrierShip p = new CarrierShip(recId, currentXY);
-                 addVehicleHandler(p);
-             }
+        carrierAdd.addActionListener(actionEvent -> {
+            if (map.checkSemaphores(Ship.class, currentXY)) {
+                CarrierShip p = new CarrierShip(recId, currentXY);
+                addVehicleHandler(p);
+            }
         });
-        cruiseAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
+        cruiseAdd.addActionListener(actionEvent -> {
+            if (map.checkSemaphores(Ship.class, currentXY)) {
                 CruiseShip p = new CruiseShip(recId, currentXY);
                 addVehicleHandler(p);
             }
         });
 
         // DESTINATION BUTTON LISTENER
-        setDest.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (comboBox.getSelectedItem() != null) {
-                    Place   out = (Place)container.get((Integer)comboBox.getSelectedItem());
-                    Vehicle in = (Vehicle)container.get(selectedId);
-                    if (out != null && in != null) {
-                        in.setTarget(out.getPos(), out);
-                    }
+        setDest.addActionListener(actionEvent -> {
+            if (comboBox.getSelectedItem() != null) {
+                Place out = (Place)container.get((Integer)comboBox.getSelectedItem());
+                Vehicle in = (Vehicle)container.get(selectedId);
+                if (out != null && in != null) {
+                    in.setTarget(out.getPos(), out);
                 }
             }
         });
 
         // SELECTION COMBOBOX BUTTON LISTENER
-        selectVehicle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (comboBox.getSelectedItem() != null) {
-                    int id = (int)comboBox.getSelectedItem();
-                    Viewable ref = (Viewable) container.get(id);
-                    if (container.get(id) != null) {
-                        setSelection(ref);
-                    }
+        selectVehicle.addActionListener(actionEvent -> {
+            if (comboBox.getSelectedItem() != null) {
+                int id = (int)comboBox.getSelectedItem();
+                Viewable ref = (Viewable) container.get(id);
+                if (container.get(id) != null) {
+                    setSelection(ref);
                 }
             }
         });
         // emergency landing on a closest available airport
-        emergencyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                Vehicle obj = (Vehicle)container.get(selectedId);
-                Place closest = null;
+        emergencyButton.addActionListener(actionEvent -> {
+            Vehicle obj = (Vehicle)container.get(selectedId);
+            Place closest;
 
-                if (obj.getClass() == MilitaryPlane.class) {
-                    closest = container.findClosestAirport(
-                            obj.getPos(), MilitaryAirport.class);
-                } else {
-                    closest = container.findClosestAirport(
-                            obj.getPos(), CivilAirport.class);
-                }
-                obj.setTarget(closest.getPos(), closest);
+            if (obj.getClass() == MilitaryPlane.class) {
+                closest = container.findClosestAirport(
+                        obj.getPos(), MilitaryAirport.class);
+            } else {
+                closest = container.findClosestAirport(
+                        obj.getPos(), CivilAirport.class);
             }
+            obj.setTarget(closest.getPos(), closest);
         });
     }
     // thread ----------------------------------------------------------------------
@@ -191,17 +176,16 @@ public class Options implements Runnable {
 
             Map<Integer, Place> ref = container.getPlaces();
 
-            if (select.getType().equals("PassengerPlane")) {
-                setComboBox(ref, CivilAirport.class);
-                emergencyLanding.setVisible(true);
-            }
-            else if (select.getType().equals("MilitaryPlane")) {
-                setComboBox(ref, MilitaryAirport.class);
-                emergencyLanding.setVisible(true);
-            }
-            else if (select.getType().equals("CarrierShip") ||
-                     select.getType().equals("CruiseShip")) {
-                setComboBox(ref, Harbour.class);
+            switch (select.getType()) {
+                case "PassengerPlane" -> {
+                    setComboBox(ref, CivilAirport.class);
+                    emergencyLanding.setVisible(true);
+                }
+                case "MilitaryPlane" -> {
+                    setComboBox(ref, MilitaryAirport.class);
+                    emergencyLanding.setVisible(true);
+                }
+                case "CarrierShip", "CruiseShip" -> setComboBox(ref, Harbour.class);
             }
             comboBox.setSelectedItem(select.getSelected());
         }
@@ -245,7 +229,7 @@ public class Options implements Runnable {
     void setInfo(String val, JTextArea handle) {
         handle.setText(val);
     }
-    void setComboBox(Map<Integer, Place> ref, Class request) {
+    void setComboBox(Map<Integer, Place> ref, Class<?> request) {
         for (int key: ref.keySet()) {
             if (ref.get(key).getClass() == request) {
                 comboBox.addItem(key);
@@ -258,7 +242,6 @@ public class Options implements Runnable {
         }
     }
 
-    // adding new vehicles
     int infoAsInt(JTextArea val) throws NumberFormatException {
         if (val.getText().equals("")) {
             return -1;
@@ -278,6 +261,7 @@ public class Options implements Runnable {
             obj.setLoad(infoAsInt(infoLoad));
             obj.setMaxSpeed(infoAsInt(infoSpeed));
 
+            // increment recId
             container.add(obj, recId++);
         } catch (NumberFormatException e) {
             System.out.println("Wrong format:");

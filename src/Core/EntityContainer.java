@@ -13,7 +13,7 @@ public class EntityContainer {
     private final Map<Integer, Place>     stations    = new HashMap<>();
 
     public void add(Vehicle veh, int key) {
-        Class type = veh.getClass();
+        Class<?> type = veh.getClass();
         if (Airplane.class.isAssignableFrom(type)) {
             planes.put(key, (Airplane)veh);
             veh.start();
@@ -22,13 +22,15 @@ public class EntityContainer {
             veh.start();
         }
     }
-    public void add(Place place, int key)       { stations.put(key, place); }
-
+    public void add(Place place, int key) {
+        stations.put(key, place);
+    }
     public void remove(int key) {
         ((Vehicle)get(key)).stop();
         ships.remove(key);
         planes.remove(key);
     }
+
     public Object get(int key) {
         Object ret;
         ret = ships.getOrDefault(key, null);
@@ -39,6 +41,7 @@ public class EntityContainer {
 
         return stations.getOrDefault(key, null);
     }
+    // unify ???
     public synchronized Map<Integer, Airplane> getPlanes() {
         return this.planes;
     }
@@ -49,12 +52,12 @@ public class EntityContainer {
         return this.stations;
     }
 
-    public Place findClosestAirport(int[] xy, Class type) {
+    public Place findClosestAirport(int[] xy, Class<?> type) {
         int minDist = Integer.MAX_VALUE;
         Place place = null;
 
         for (Integer key: stations.keySet()) {
-            Viewable obj = stations.get(key);
+            Place obj = stations.get(key);
             if (obj.getLoad() < obj.getCapacity() &&
                     obj.getClass() == type)
             {
@@ -63,7 +66,7 @@ public class EntityContainer {
                                 Math.pow(ref[1] - xy[1], 2));
                 if (dist < minDist) {
                     minDist = dist;
-                    place = (Place)obj;
+                    place = obj;
                 }
             }
         }

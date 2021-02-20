@@ -86,12 +86,23 @@ public class MapSystem extends JFrame {
         return gridSize;
     }
 
-    // semaphore operations
+    // semaphore operations -------------------------------------------------------
+    public boolean checkSemaphores(Class<?> type, int[] pos) {
+        int idx = calcIdx(pos);
+        if (Airplane.class == type) {
+            return planePlacement[idx].availablePermits() > 0;
+        }
+        else if (Ship.class == type) {
+            return shipPlacement[idx].availablePermits() > 0;
+        }
+        return false;
+    }
     public int acquireLock(int idx, Object type) throws InterruptedException {
         if (idx > -1 && idx < gridDensity * gridDensity) {
             if (Airplane.class.isAssignableFrom(type.getClass())) {
                 planePlacement[idx].acquire();
-            } else if (Ship.class.isAssignableFrom(type.getClass())) {
+            }
+            else if (Ship.class.isAssignableFrom(type.getClass())) {
                 shipPlacement[idx].acquire();
             }
         }

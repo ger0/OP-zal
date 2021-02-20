@@ -13,11 +13,13 @@ public class Application {
         try {
             EntityContainer container = new EntityContainer();
 
-            int amnt = 8;
+            int amnt = 10;
             int drawSize = (int)((float)SIZE / 2.5);
             while (id <= amnt) {
-                int[] xy = {(int)(Math.cos((double)id * 3.14 * 2 / amnt) * drawSize + SIZE / 2),
-                            (int)(Math.sin((double)id * 3.14 * 2 / amnt) * drawSize + SIZE / 2)};
+                int[] xy = {(int)(Math.cos((double)id *
+                                3.14 * 2 / amnt) * drawSize + SIZE / 2),
+                            (int)(Math.sin((double)id *
+                                3.14 * 2 / amnt) * drawSize + SIZE / 2)};
                 if (id % 3 == 0) {
                     MilitaryAirport port = new MilitaryAirport(id, xy);
                     port.setCapacity(2);
